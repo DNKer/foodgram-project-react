@@ -1,1 +1,1 @@
-# praktikum_new_diplom
+# Foodgram. Ваш «Продуктовый помощник».
