@@ -1,8 +1,13 @@
 from django.contrib import admin
 
 from .models import (
-    Ingredient, IngredientInRecipe, FavoriteRecipe, Subscribe,
-    RecipeList, ShoppingCart, Tag
+    Ingredient,
+    IngredientInRecipe,
+    FavoriteRecipe,
+    Subscribe,
+    RecipeList,
+    ShoppingCart,
+    Tag
 )
 
 EMPTY_STRING: str = '-пусто-'
@@ -38,10 +43,11 @@ class RecipeListAdmin(admin.ModelAdmin):
 
     @admin.display(description='Тэги')
     def get_tags(self, obj):
-        list = []
-        for _ in obj.tags.all():
-            list = _.name + ', '.join(list)
-        return list
+        tags_list = []
+        for tag in obj.tags.all():
+            tags_list.append(tag)
+        tags_list = (', '.join([str(item) for item in tags_list]))
+        return tags_list
 
     @admin.display(description='Ингредиенты')
     def get_ingredients(self, obj):

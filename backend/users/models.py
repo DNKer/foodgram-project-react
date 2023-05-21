@@ -10,7 +10,7 @@ class User(AbstractUser):
         unique=True,
         blank=False,
         help_text='Введите уникальное имя пользователя'
-    )    
+    )
     email = models.EmailField(
         'Электронная почта',
         max_length=254,
@@ -31,11 +31,9 @@ class User(AbstractUser):
         blank=False,
         help_text='Введите фамилию'
     )
-    
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
-
 
     class Meta:
         verbose_name = 'Пользователь'

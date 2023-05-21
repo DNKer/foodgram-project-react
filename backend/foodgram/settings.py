@@ -1,7 +1,7 @@
 """ FoodGram Community
 Copyright (C) 2023 Authors: Dmitry Korepanov, Yandex practikum
 License Free
-Version: 1.0.0. 2023"""
+Version: 1.0.1. 2023"""
 
 import os
 
@@ -20,11 +20,11 @@ SECRET_KEY = os.getenv(
     default='secret_code_must_be_here'
 )
 
-DEBUG = True
+DEBUG = os.getenv('DEBUG', default=False)
 
 ALLOWED_HOSTS = os.environ.get(
     'ALLOWED_HOSTS',
-    default='127.0.0.1').split(' ')
+    default='127.0.0.1')
 
 AUTH_USER_MODEL = 'users.User'
 

@@ -23,7 +23,7 @@ class Tag(models.Model):
     )
     slug = models.SlugField(
         'Уникальный слаг',
-        max_length=200,
+        max_length=80,
         unique=True,
         blank=False
     )
@@ -48,7 +48,7 @@ class Ingredient(models.Model):
     )
     measurement_unit = models.CharField(
         'Единица измерения ингредиента',
-        max_length=200,
+        max_length=20,
         blank=False
     )
 
@@ -201,10 +201,8 @@ class FavoriteRecipe(models.Model):
         verbose_name_plural = 'Избранные рецепты'
 
     def __str__(self):
-        favorite_list=[]
-        for item in self.recipe.values('name'):
-            favorite_list = item['name']
-        return f'Пользователь {self.user} добавил {favorite_list} в избранное.'
+        return (f'Пользователь {self.user} '
+                f'добавил {self.recipe} в избранное.')
 
 
 class ShoppingCart(models.Model):
@@ -228,6 +226,5 @@ class ShoppingCart(models.Model):
         ordering = ['-id']
 
     def __str__(self):
-        for item in self.recipe.values('name'):
-            list = item['name']
-        return f'Пользователь {self.user} добавил {list} в покупки.'
+        return (f'Пользователь {self.user} '
+                f'добавил {self.recipe} в покупки.')

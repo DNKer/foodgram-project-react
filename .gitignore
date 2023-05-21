@@ -130,3 +130,10 @@ dmypy.json
 
 # .idea
 .idea
+
+# Media, static and VSCode folders
+media/
+static/
+.vscode/
+
+

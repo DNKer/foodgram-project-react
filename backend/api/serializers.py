@@ -1,12 +1,15 @@
 from django.contrib.auth import authenticate, get_user_model
-from django.contrib.auth import password_validation
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers, validators
 from rest_framework.generics import get_object_or_404
 
 from recipes.models import (
-        Ingredient, IngredientInRecipe, RecipeList,
-        Subscribe, Tag)
+    Ingredient,
+    IngredientInRecipe,
+    RecipeList,
+    Subscribe,
+    Tag,
+)
 
 
 User = get_user_model()
@@ -45,7 +48,6 @@ class AuthSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError(
                     'Не удается войти в систему с '
                     'указанными учетными данными.')
-        else:
             raise serializers.ValidationError(
                 'Необходимо указать "адрес электронной '
                 'почты" и "пароль".')
@@ -130,16 +132,15 @@ class SubscribeSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({
                 'errors': 'Ошибка подписки! Нельзя подписаться на самого себя.'
             })
-        if get_object_or_404(Subscribe,
-                             user=user_id,
-                             author=author_id
-                             ).exists():
+        if Subscribe.objects.filter(
+                    user=user_id,
+                    author=author_id
+                    ).exists():
             raise serializers.ValidationError({
                 'errors': 'Ошибка подписки! Нельзя подписаться повторно.'
             })
-        get_object_or_404(User, id=author_id)
-        data['user'] = User.objects.get(id=user_id)
-        data['author'] = User.objects.get(id=author_id)
+        data['user'] = get_object_or_404(User, id=user_id)
+        data['author'] = get_object_or_404(User, id=author_id)
         return data
 
     def get_is_subscribed(self, obj):
@@ -210,7 +211,8 @@ class RecipeSerializer(serializers.ModelSerializer):
                   'name', 'image', 'text', 'cooking_time',
                   'is_favorited', 'is_in_shopping_cart')
 
-    def create_ingredients(self, recipe, ingredients):
+    @staticmethod
+    def __create_ingredients(recipe, ingredients):
         """ Создание ингредиентов в промежуточной таблице. """
         IngredientInRecipe.objects.bulk_create(
             [IngredientInRecipe(recipe=recipe,
@@ -225,7 +227,7 @@ class RecipeSerializer(serializers.ModelSerializer):
         tags = validated_data.pop('tags')
         recipe = RecipeList.objects.create(image=image, **validated_data)
         recipe.tags.set(tags)
-        self.create_ingredients(recipe, ingredients)
+        self.__create_ingredients(recipe, ingredients)
         return recipe
 
     def update(self, instance, validated_data):
