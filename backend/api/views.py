@@ -184,7 +184,7 @@ class RecipesViewSet(ModelViewSet):
         Скачать корзину (список) покупок.
         """
         response = HttpResponse(
-                        collect_shopping_cart(request),
+                        collect_shopping_cart(request.user),
                         content_type='text/plain'
         )
         response['Content-Disposition'] = (

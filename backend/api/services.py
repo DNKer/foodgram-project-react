@@ -3,12 +3,12 @@ from django.db.models import F, Sum
 from recipes.models import IngredientInRecipe
 
 
-def collect_shopping_cart(request):
+def collect_shopping_cart(user):
     """
     Формирование корзины (списка) покупок.
     """
     shopping_list = IngredientInRecipe.objects.filter(
-        recipe__shopping_cart__user=request.user).values(
+        recipe__shopping_cart__user=user).values(
         name=F('ingredient__name'),
         measurement_unit=F('ingredient__measurement_unit')
         ).annotate(total_amount=Sum('amount'))
