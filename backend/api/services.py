@@ -12,8 +12,9 @@ def collect_shopping_cart(user):
         name=F('ingredient__name'),
         measurement_unit=F('ingredient__measurement_unit')
         ).annotate(total_amount=Sum('amount'))
-    text = '\n'.join([f'{0} ({1}) \u2014 {2}'.format(
-                item['name'], item['measurement_unit'],
-                item['total_amount'])
-        for item in shopping_list])
+    
+    for item in shopping_list:
+        text = '\n'.join(f'{0} ({1}) \u2014 {2}'.format(
+            item['name'], item['measurement_unit'],
+            item['total_amount']))
     return text
