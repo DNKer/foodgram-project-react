@@ -1,45 +1,26 @@
 from django.contrib.auth import get_user_model
 from django.db.models.expressions import Exists, OuterRef, Value
-from django_filters.rest_framework import DjangoFilterBackend
 from django.http import HttpResponse
+from django_filters.rest_framework import DjangoFilterBackend
 from djoser.views import UserViewSet
+from recipes.models import (FavoriteRecipe, Ingredient, RecipeList,
+                            ShoppingCart, Subscribe, Tag)
 from rest_framework import status
-from rest_framework.decorators import action
-from rest_framework.generics import get_object_or_404
-from rest_framework.response import Response
-from rest_framework.viewsets import (
-    ModelViewSet,
-    ReadOnlyModelViewSet
-)
 from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
-from rest_framework.permissions import (
-    AllowAny,
-    IsAuthenticated,
-    IsAuthenticatedOrReadOnly
-)
+from rest_framework.decorators import action
+from rest_framework.generics import get_object_or_404
+from rest_framework.permissions import (AllowAny, IsAuthenticated,
+                                        IsAuthenticatedOrReadOnly)
+from rest_framework.response import Response
+from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
 from .filters import IngredientFilter, RecipeFilter
 from .pagination import LimitPageNumberPagination
-from recipes.models import (
-    FavoriteRecipe,
-    Ingredient,
-    RecipeList,
-    ShoppingCart,
-    Subscribe,
-    Tag
-)
-from .serializers import (
-    AuthSerializer,
-    IngredientSerializer,
-    FavoriteOrSubscribeSerializer,
-    RecipeSerializer,
-    SubscribeSerializer,
-    TagSerializer,
-    UserSerializer
-)
+from .serializers import (AuthSerializer, FavoriteOrSubscribeSerializer,
+                          IngredientSerializer, RecipeSerializer,
+                          SubscribeSerializer, TagSerializer, UserSerializer)
 from .services import collect_shopping_cart
-
 
 User = get_user_model()
 
