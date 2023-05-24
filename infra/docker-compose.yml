@@ -9,27 +9,29 @@ services:
       - ./.env
 
   backend:
-    image: dnker/foodgram_backend
+    image: dnker/foodgram_backend:latest
+    restart: always
     volumes:
+      - data_value:/app/data/
       - static_value:/app/static/
       - media_value:/app/media/
     depends_on:
       - db
     env_file:
       - .env
-    restart: always
     container_name: foodgram_backend
 
   frontend:
-    image: dnker/foodgram_frontend
+    image: dnker/foodgram_frontend:latest
     volumes:
       - ../frontend/:/app/result_build/
     depends_on:
-      - db
+      - backend
     container_name: foodgram_frontend
 
   nginx:
     image: nginx:1.19.3
+    restart: always
     ports:
       - "80:80"
     volumes:
@@ -39,10 +41,11 @@ services:
       - static_value:/var/html/static/
       - media_value:/var/html/media/
     depends_on:
-      - backend
+      - frontend
     container_name: foodgram_nginx
 
 volumes:
   db_value:
   static_value:
   media_value:
+  data_value:
