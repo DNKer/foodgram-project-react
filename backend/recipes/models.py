@@ -97,7 +97,7 @@ class RecipeList(models.Model):
         verbose_name='Время приготовления в минутах',
         validators=[validators.MinValueValidator(
             1, message='Минимальное время приготовления `1` минута!'), ]
-        )
+    )
     pub_date = models.DateTimeField(
         'Дата публикации',
         auto_now_add=True

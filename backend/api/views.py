@@ -73,8 +73,8 @@ class UsersViewSet(UserViewSet):
         """ Получить список пользователей. """
         if self.request.user.is_authenticated:
             return (User.objects.annotate(is_subscribed=Exists(
-                self.request.user.subscriber.filter(author=OuterRef('id'))
-                )).prefetch_related('subscriber', 'subscribing'))
+                self.request.user.subscriber.filter(author=OuterRef('id'))))
+                .prefetch_related('subscriber', 'subscribing'))
         return User.objects.annotate(is_subscribed=Value(False))
 
     @action(methods=['POST', 'DELETE'],
@@ -99,8 +99,8 @@ class UsersViewSet(UserViewSet):
     def subscriptions(self, request):
         """ Получить на кого пользователь подписан. """
         serializer = SubscribeSerializer(
-            self.paginate_queryset(
-                        Subscribe.objects.filter(user=request.user)),
+            self.paginate_queryset(Subscribe.objects.filter(
+                                   user=request.user)),
             many=True, context={'request': request})
         return self.get_paginated_response(serializer.data)
 
@@ -160,10 +160,10 @@ class RecipesViewSet(ModelViewSet):
         Добавить рецепт в избранное или удалить из него.
         """
         if request.method == 'POST':
-            return self.new_favorite_or_cart(
-                            FavoriteRecipe, request.user, pk)
-        return self.remove_favorite_or_cart(
-                            FavoriteRecipe, request.user, pk)
+            return self.new_favorite_or_cart(FavoriteRecipe,
+                                             request.user, pk)
+        return self.remove_favorite_or_cart(FavoriteRecipe,
+                                            request.user, pk)
 
     @action(detail=True, methods=['POST', 'DELETE'],
             permission_classes=[IsAuthenticated])
@@ -172,10 +172,8 @@ class RecipesViewSet(ModelViewSet):
         Добавить рецепт в список покупок или удалить из него.
         """
         if request.method == 'POST':
-            return self.new_favorite_or_cart(
-                            ShoppingCart, request.user, pk)
-        return self.remove_favorite_or_cart(
-                            ShoppingCart, request.user, pk)
+            return self.new_favorite_or_cart(ShoppingCart, request.user, pk)
+        return self.remove_favorite_or_cart(ShoppingCart, request.user, pk)
 
     @action(detail=False, methods=['GET'],
             permission_classes=(IsAuthenticated,))
@@ -183,10 +181,8 @@ class RecipesViewSet(ModelViewSet):
         """
         Скачать корзину (список) покупок.
         """
-        response = HttpResponse(
-                        collect_shopping_cart(request.user),
-                        content_type='text/plain'
-        )
+        response = HttpResponse(collect_shopping_cart(request.user),
+                                content_type='text/plain')
         response['Content-Disposition'] = (
             'attachment; filename="shopping_cart.txt"')
         return response
