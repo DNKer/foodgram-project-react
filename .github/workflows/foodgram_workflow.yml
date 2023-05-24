@@ -73,6 +73,7 @@ jobs:
           username: ${{ secrets.USER }}
           key: ${{ secrets.SSH_KEY }}
           script: |
+            sudo docker-compose stop
             cd infra/
             sudo touch .env
             echo DB_ENGINE=${{ secrets.DB_ENGINE }} >> .env
