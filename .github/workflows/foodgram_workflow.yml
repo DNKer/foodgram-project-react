@@ -65,7 +65,8 @@ jobs:
           sudo docker pull dnker/foodgram_backend:latest
           sudo docker pull dnker/foodgram_frontend:latest
           sudo docker-compose stop
-          sudo docker-compose rm backend
+          sudo docker rm backend
+          sudo docker rm frontend
     - name: docker-compose up
       uses: appleboy/ssh-action@master
       with:
@@ -73,7 +74,9 @@ jobs:
         username: ${{ secrets.USER }}
         key: ${{ secrets.SSH_KEY }}
         script: |
-          sudo touch .env
+          rm .env
+          touch .env
+          sudo chmod ugo+rwx .env
           echo DB_ENGINE=${{ secrets.DB_ENGINE }} >> .env
           echo DB_NAME=${{ secrets.DB_NAME }} >> .env
           echo POSTGRES_USER=${{ secrets.POSTGRES_USER }} >> .env
