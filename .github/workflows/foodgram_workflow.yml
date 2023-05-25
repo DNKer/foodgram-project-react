@@ -62,9 +62,8 @@ jobs:
         username: ${{ secrets.USER }}
         key: ${{ secrets.SSH_KEY }}
         script: |
-          sudo docker pull dnker/foodgram_backend
-          sudo docker pull dnker/foodgram_frontend
-          cd infra/
+          sudo docker pull dnker/foodgram_backend:latest
+          sudo docker pull dnker/foodgram_frontend:latest
           sudo docker-compose stop
           sudo docker-compose rm backend
     - name: docker-compose up
