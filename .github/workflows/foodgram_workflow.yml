@@ -64,6 +64,7 @@ jobs:
         script: |
           sudo docker pull dnker/foodgram_backend:latest
           sudo docker pull dnker/foodgram_frontend:latest
+          mkdir infra && cd infra/
           sudo docker-compose stop
           sudo docker-compose rm backend
     - name: docker-compose up
@@ -73,7 +74,7 @@ jobs:
         username: ${{ secrets.USER }}
         key: ${{ secrets.SSH_KEY }}
         script: |
-          mkdir foodgram && cd foodgram/
+          cd infra/
           sudo touch .env
           sudo chmod ugo+rwx .env
           echo DB_ENGINE=${{ secrets.DB_ENGINE }} >> .env
