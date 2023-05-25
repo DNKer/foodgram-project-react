@@ -64,7 +64,6 @@ jobs:
         script: |
           sudo docker pull dnker/foodgram_backend:latest
           sudo docker pull dnker/foodgram_frontend:latest
-          mkdir infra && cd infra/
           sudo docker-compose stop
           sudo docker-compose rm backend
     - name: docker-compose up
