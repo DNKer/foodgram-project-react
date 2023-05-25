@@ -7,6 +7,6 @@ COPY requirements.txt .
 RUN apt-get update && \
     pip install --upgrade pip && pip install -r requirements.txt
 
-COPY . .
+COPY . ./
 
 CMD ["gunicorn", "foodgram.wsgi:application", "--bind", "0:8000" ]
