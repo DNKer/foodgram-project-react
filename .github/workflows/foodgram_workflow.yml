@@ -62,11 +62,12 @@ jobs:
         username: ${{ secrets.USER }}
         key: ${{ secrets.SSH_KEY }}
         script: |
+          docker logout
           sudo docker pull dnker/foodgram_backend:latest
           sudo docker pull dnker/foodgram_frontend:latest
           cd infra/
           sudo docker-compose stop
-          sudo docker-compose rm backend
+          sudo docker rm -v -f $(docker ps -qa)
     - name: docker-compose up
       uses: appleboy/ssh-action@master
       with:
