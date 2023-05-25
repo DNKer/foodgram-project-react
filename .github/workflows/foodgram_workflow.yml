@@ -74,7 +74,6 @@ jobs:
         username: ${{ secrets.USER }}
         key: ${{ secrets.SSH_KEY }}
         script: |
-          rm .env
           touch .env
           sudo chmod ugo+rwx .env
           echo DB_ENGINE=${{ secrets.DB_ENGINE }} >> .env
