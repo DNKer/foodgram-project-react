@@ -64,8 +64,8 @@ jobs:
         script: |
           sudo docker pull dnker/foodgram_backend:latest
           sudo docker pull dnker/foodgram_frontend:latest
-          sudo docker-compose stop
-          sudo docker-compose rm backend
+          sudo docker stop $(sudo docker ps -a -q)
+          sudo docker rm backend
     - name: docker-compose up
       uses: appleboy/ssh-action@master
       with:
