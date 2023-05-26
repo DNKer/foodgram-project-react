@@ -28,6 +28,8 @@ services:
       - ../frontend/:/app/result_build/
     depends_on:
       - backend
+    stdin_open: true
+    tty: true
 
   nginx:
     container_name: foodgram_nginx
