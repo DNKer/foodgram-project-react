@@ -73,6 +73,7 @@ jobs:
         username: ${{ secrets.USER }}
         key: ${{ secrets.SSH_KEY }}
         script: |
+          cd foodgram-project-react/infra/
           sudo rm .env
           sudo touch .env
           sudo chmod ugo+rwx .env
