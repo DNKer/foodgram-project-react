@@ -12,7 +12,8 @@ load_dotenv()
 
 DEFAULT_PAGE_SIZE: int = 6
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+BASE_DIR = os.path.dirname(
+    os.path.dirname(os.path.abspath(__file__)))
 
 SECRET_KEY = os.getenv(
     'SECRET_KEY',
@@ -21,10 +22,12 @@ SECRET_KEY = os.getenv(
 
 DEBUG = os.getenv('DEBUG', default=False)
 
-ALLOWED_HOSTS = os.getenv(
-    'ALLOWED_HOSTS',
-    default=['localhost']
-).split(', ')
+ALLOWED_HOSTS = ['127.0.0.1',
+                 '146.185.209.153',
+                 'foodgrams.ddns.net',
+                 'localhost',
+                 'backend',
+                 'frontend']
 
 AUTH_USER_MODEL = 'users.User'
 
