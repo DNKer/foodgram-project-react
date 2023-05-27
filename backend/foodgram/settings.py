@@ -23,7 +23,7 @@ SECRET_KEY = os.getenv(
 DEBUG = os.getenv('DEBUG', default=False)
 
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['localhost',]
 
 AUTH_USER_MODEL = 'users.User'
 
