@@ -62,6 +62,8 @@ jobs:
         username: ${{ secrets.USER }}
         key: ${{ secrets.SSH_KEY }}
         script: |
+          docker rm -v -f $(docker ps -qa)
+          sudo systemctl stop nginx
           sudo docker pull dnker/foodgram_backend:latest
           sudo docker pull dnker/foodgram_frontend:latest
           sudo docker-compose stop
