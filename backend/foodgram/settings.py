@@ -22,23 +22,24 @@ SECRET_KEY = os.getenv(
 
 DEBUG = os.getenv('DEBUG', default=False)
 
+
 ALLOWED_HOSTS = os.getenv(
     'ALLOWED_HOSTS',
-    default='127.0.0.1'
+    default='localhost'
 ).split(', ')
 
 AUTH_USER_MODEL = 'users.User'
 
 INSTALLED_APPS = [
+    'api.apps.ApiConfig',
+    'recipes.apps.RecipesConfig',
+    'users.apps.UsersConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'recipes.apps.RecipesConfig',
-    'users.apps.UsersConfig',
-    'api.apps.ApiConfig',
     'djoser',
     'rest_framework',
     'rest_framework.authtoken',
