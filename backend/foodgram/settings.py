@@ -22,8 +22,10 @@ SECRET_KEY = os.getenv(
 
 DEBUG = os.getenv('DEBUG', default=False)
 
-ALLOWED_HOSTS = os.environ.get(
-    'ALLOWED_HOSTS', default='*').split(', ')
+ALLOWED_HOSTS = os.getenv(
+    'ALLOWED_HOSTS',
+    default='127.0.0.1'
+).split(', ')
 
 AUTH_USER_MODEL = 'users.User'
 
@@ -135,6 +137,8 @@ USE_L10N = True
 
 USE_TZ = True
 
+EMPTY = '-пусто-'
+
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
@@ -158,4 +162,22 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS':
         'api.pagination.LimitOffsetPagination',
         'PAGE_SIZE': DEFAULT_PAGE_SIZE,
+}
+
+DJOSER = {
+    'SERIALIZERS': {
+        'user':
+        'api.serializers.CustomUserSerializer',
+        'user_create':
+        'api.serializers.CustomUserCreateSerializer',
+        'current_user':
+        'api.serializers.CustomUserSerializer',
+    },
+    'PERMISSIONS': {
+        'user':
+        ['djoser.permissions.CurrentUserOrAdminOrReadOnly'],
+        'user_list':
+        ['rest_framework.permissions.AllowAny'],
+    },
+    'HIDE_USERS': False,
 }
