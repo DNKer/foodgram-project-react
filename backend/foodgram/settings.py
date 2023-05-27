@@ -24,7 +24,7 @@ DEBUG = os.getenv('DEBUG', default=False)
 
 ALLOWED_HOSTS = os.getenv(
     'ALLOWED_HOSTS',
-    default=['localhost'])
+    default='localhost')
 
 AUTH_USER_MODEL = 'users.User'
 
