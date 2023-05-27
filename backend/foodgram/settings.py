@@ -22,12 +22,10 @@ SECRET_KEY = os.getenv(
 
 DEBUG = os.getenv('DEBUG', default=False)
 
-ALLOWED_HOSTS = ['127.0.0.1',
-                 '146.185.209.153',
-                 'foodgrams.ddns.net',
-                 'localhost',
-                 'backend',
-                 'frontend']
+ALLOWED_HOSTS = os.getenv(
+    'ALLOWED_HOSTS',
+    default=['localhost']
+).split(', ')
 
 AUTH_USER_MODEL = 'users.User'
 
