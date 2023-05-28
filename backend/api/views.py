@@ -44,8 +44,6 @@ from .services import collect_shopping_cart
 User = get_user_model()
 
 
-@action(detail=True, methods=['POST'],
-        permission_classes=[AllowAny])
 class AuthToken(ObtainAuthToken):
     """
     Авторизация пользователя.
