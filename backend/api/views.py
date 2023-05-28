@@ -45,7 +45,7 @@ User = get_user_model()
 
 
 @action(detail=True, methods=['POST'],
-            permission_classes=[AllowAny])
+        permission_classes=[AllowAny])
 class AuthToken(ObtainAuthToken):
     """
     Авторизация пользователя.
