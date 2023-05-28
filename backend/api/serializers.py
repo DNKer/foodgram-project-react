@@ -48,6 +48,7 @@ class AuthSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError(
                     'Не удается войти в систему с '
                     'указанными учетными данными.')
+        else:
             raise serializers.ValidationError(
                 'Необходимо указать "адрес электронной '
                 'почты" и "пароль".')
