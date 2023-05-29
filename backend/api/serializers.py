@@ -49,7 +49,7 @@ class AuthSerializer(serializers.ModelSerializer):
         else:
             raise serializers.ValidationError(
                 'Необходимо указать "адрес '
-                'электронной почты" и "пароль".',
+                'электронной почты" и "пароль"',
                 code='authorization')
         data['user'] = user
         return data
@@ -209,8 +209,8 @@ class UserPasswordSerializer(serializers.Serializer):
                 username=user.email,
                 password=current_password):
             raise serializers.ValidationError(
-                'Необходимо указать "адрес '
-                'электронной почты" и "пароль".',
+                'Не удается войти в систему с '
+                'предоставленными учетными данными.',
                 code='authorization')
         return current_password
 
