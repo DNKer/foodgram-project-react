@@ -33,10 +33,6 @@ class AuthSerializer(serializers.ModelSerializer):
         label='Токен',
         read_only=True)
 
-    class Meta:
-        model = User
-        fields = ('email', 'password', 'token')
-
     def validate(self, data):
         email = data.get('email')
         password = data.get('password')
