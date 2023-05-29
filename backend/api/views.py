@@ -4,7 +4,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from django.http import HttpResponse
 from djoser.views import UserViewSet
 from rest_framework import status
-from rest_framework.decorators import action
+from rest_framework.decorators import action, api_view
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.viewsets import (
@@ -36,6 +36,7 @@ from .serializers import (
     RecipeSerializer,
     SubscribeSerializer,
     TagSerializer,
+    UserPasswordSerializer,
     UserSerializer
 )
 from .services import collect_shopping_cart
@@ -186,3 +187,20 @@ class RecipesViewSet(ModelViewSet):
         response['Content-Disposition'] = (
             'attachment; filename="shopping_cart.txt"')
         return response
+
+
+@api_view(['post'])
+def set_password(request):
+    """Изменить пароль."""
+
+    serializer = UserPasswordSerializer(
+        data=request.data,
+        context={'request': request})
+    if serializer.is_valid():
+        serializer.save()
+        return Response(
+            {'message': 'Пароль изменен!'},
+            status=status.HTTP_201_CREATED)
+    return Response(
+        {'error': 'Введите верные данные!'},
+        status=status.HTTP_400_BAD_REQUEST) 
