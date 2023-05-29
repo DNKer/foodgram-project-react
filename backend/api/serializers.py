@@ -16,7 +16,7 @@ from recipes.models import (
 User = get_user_model()
 
 
-class AuthSerializer(serializers.ModelSerializer):
+class AuthSerializer(serializers.Serializer):
     """
     Сериализатор формы авторизации.
     """
