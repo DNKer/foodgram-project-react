@@ -200,7 +200,7 @@ class UserPasswordSerializer(serializers.Serializer):
             raise serializers.ValidationError(
                 'Необходимо указать "адрес '
                 'электронной почты" и "пароль".',
-                code='authorization', code='authorization')
+                code='authorization')
         return current_password
 
     def validate_new_password(self, new_password):

@@ -203,4 +203,4 @@ def set_password(request):
             status=status.HTTP_201_CREATED)
     return Response(
         {'error': 'Введите верные данные!'},
-        status=status.HTTP_400_BAD_REQUEST) 
+        status=status.HTTP_400_BAD_REQUEST)
