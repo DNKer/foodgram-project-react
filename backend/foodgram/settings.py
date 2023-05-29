@@ -157,3 +157,12 @@ REST_FRAMEWORK = {
         'api.pagination.LimitOffsetPagination',
         'PAGE_SIZE': DEFAULT_PAGE_SIZE,
 }
+
+DJOSER = {
+    'LOGIN_FIELD': 'email',
+    'SERIALIZERS': {
+        'user_create': 'api.serializers.UserCreateSerializer',
+        'user': 'api.serializers.UserSerializer',
+        'current_user': 'api.serializers.UserSerializer',
+    },
+}
