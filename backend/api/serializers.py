@@ -165,6 +165,21 @@ class SubscribeSerializer(serializers.ModelSerializer):
         return RecipeList.objects.filter(author=obj.author).count()
 
 
+class UserCreateSerializer(serializers.ModelSerializer):
+    """
+    Сериализатор для создания пользователя.
+    """
+    class Meta:
+        model = User
+        fields = (
+            'id', 'email', 'username',
+            'first_name', 'last_name', 'password',)
+
+    def validate_password(self, password):
+        validators.validate_password(password)
+        return password
+
+
 class UserSerializer(serializers.ModelSerializer):
     """
     Сериализатор для обработки данных о пользователях.

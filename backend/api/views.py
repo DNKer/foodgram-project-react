@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.contrib.auth.hashers import make_password
 from django.db.models.expressions import Exists, OuterRef, Value
 from django_filters.rest_framework import DjangoFilterBackend
 from django.http import HttpResponse
@@ -36,6 +37,7 @@ from .serializers import (
     RecipeSerializer,
     SubscribeSerializer,
     TagSerializer,
+    UserCreateSerializer,
     UserPasswordSerializer,
     UserSerializer
 )
@@ -77,6 +79,15 @@ class UsersViewSet(UserViewSet):
                 self.request.user.subscriber.filter(author=OuterRef('id'))))
                 .prefetch_related('subscriber', 'subscribing'))
         return User.objects.annotate(is_subscribed=Value(False))
+
+    def get_serializer_class(self):
+        if self.request.method.lower() == 'post':
+            return UserCreateSerializer
+        return UserSerializer
+
+    def perform_create(self, serializer):
+        password = make_password(self.request.data['password'])
+        serializer.save(password=password)
 
     @action(methods=['POST', 'DELETE'],
             detail=True,
