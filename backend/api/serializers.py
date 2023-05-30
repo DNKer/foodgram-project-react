@@ -11,7 +11,7 @@ from recipes.models import (
     Subscribe,
     Tag,
 )
-
+import hashlib
 
 User = get_user_model()
 
@@ -36,6 +36,8 @@ class AuthSerializer(serializers.Serializer):
     def validate(self, data):
         email = data.get('email')
         password = data.get('password')
+        t_hashed = hashlib.sha256(password.encode())
+        password = t_hashed.hexdigest() 
         if email and password:
             user = authenticate(
                 request=self.context.get('request'),
@@ -96,10 +98,6 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ('id', 'email', 'username',
                   'first_name', 'last_name',
                   'is_subscribed')
-
-    def create(self, validated_data):
-        validated_data['password'] = make_password(validated_data['password'])
-        return super(UserSerializer, self).create(validated_data)
 
     def get_is_subscribed(self, obj):
         """ Проверка подписки. """
