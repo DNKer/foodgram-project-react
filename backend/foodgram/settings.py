@@ -140,6 +140,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+ACCOUNT_AUTHENTICATION_METHOD = 'username'
+
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
@@ -167,8 +169,11 @@ DJOSER = {
     },
 
     "PERMISSIONS": {
-        "user": ["djoser.permissions.CurrentUserOrAdminOrReadOnly"],
-        "user_list": ["rest_framework.permissions.IsAuthenticatedOrReadOnly"],
+        "set_password": ["rest_framework.permissions.IsAuthenticated"],
+        "user": ["rest_framework.permissions.AllowAny"],
+        "user_list": ["rest_framework.permissions.AllowAny"],
+        "token_create": ["rest_framework.permissions.AllowAny"],
+        "token_destroy": ["rest_framework.permissions.IsAuthenticated"],
     },
     "HIDE_USERS": False,
 }

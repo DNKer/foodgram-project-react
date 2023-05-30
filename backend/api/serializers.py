@@ -33,9 +33,9 @@ class AuthSerializer(serializers.Serializer):
         label='Токен',
         read_only=True)
 
-    def validate(self, attrs):
-        email = attrs.get('email')
-        password = attrs.get('password')
+    def validate(self, data):
+        email = data.get('email')
+        password = data.get('password')
         if email and password:
             user = authenticate(
                 request=self.context.get('request'),
@@ -51,8 +51,74 @@ class AuthSerializer(serializers.Serializer):
                 'Необходимо указать "адрес '
                 'электронной почты" и "пароль"',
                 code='authorization')
-        attrs['user'] = user
-        return attrs
+        data['user'] = user
+        return data
+
+
+class UserPasswordSerializer(serializers.Serializer):
+    new_password = serializers.CharField(
+        label='Новый пароль')
+    current_password = serializers.CharField(
+        label='Текущий пароль')
+
+    def validate_current_password(self, current_password):
+        user = self.context['request'].user
+        if not authenticate(
+                username=user.email,
+                password=current_password):
+            raise serializers.ValidationError(
+                'Не удается войти в систему с '
+                'предоставленными учетными данными.',
+                code='authorization')
+        return current_password
+
+    def validate_new_password(self, new_password):
+        validators.validate_password(new_password)
+        return new_password
+
+    def create(self, validated_data):
+        user = self.context['request'].user
+        password = make_password(
+            validated_data.get('new_password'))
+        user.password = password
+        user.save()
+        return validated_data
+
+
+class UserSerializer(serializers.ModelSerializer):
+    """
+    Сериализатор для обработки данных о пользователях.
+    """
+    is_subscribed = serializers.SerializerMethodField(read_only=True)
+
+    class Meta:
+        model = User
+        fields = ('id', 'email', 'username',
+                  'first_name', 'last_name',
+                  'is_subscribed')
+
+    def get_is_subscribed(self, obj):
+        """ Проверка подписки. """
+        user = self.context.get('request').user
+        if user.is_anonymous:
+            return False
+        return Subscribe.objects.filter(
+            user=user, author=obj.id).exists()
+
+
+class UserCreateSerializer(serializers.ModelSerializer):
+    """
+    Сериализатор для создания пользователя.
+    """
+    class Meta:
+        model = User
+        fields = (
+            'id', 'email', 'username',
+            'first_name', 'last_name', 'password',)
+
+    def validate_password(self, password):
+        validators.validate_password(password)
+        return password
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -159,72 +225,6 @@ class SubscribeSerializer(serializers.ModelSerializer):
     def get_recipes_count(self, obj):
         """ Подсчет рецептов автора. """
         return RecipeList.objects.filter(author=obj.author).count()
-
-
-class UserCreateSerializer(serializers.ModelSerializer):
-    """
-    Сериализатор для создания пользователя.
-    """
-    class Meta:
-        model = User
-        fields = (
-            'id', 'email', 'username',
-            'first_name', 'last_name', 'password',)
-
-    def validate_password(self, password):
-        validators.validate_password(password)
-        return password
-
-
-class UserSerializer(serializers.ModelSerializer):
-    """
-    Сериализатор для обработки данных о пользователях.
-    """
-    is_subscribed = serializers.SerializerMethodField(read_only=True)
-
-    class Meta:
-        model = User
-        fields = ('id', 'email', 'username',
-                  'first_name', 'last_name',
-                  'is_subscribed')
-
-    def get_is_subscribed(self, obj):
-        """ Проверка подписки. """
-        user = self.context.get('request').user
-        if user.is_anonymous:
-            return False
-        return Subscribe.objects.filter(
-            user=user, author=obj.id).exists()
-
-
-class UserPasswordSerializer(serializers.Serializer):
-    new_password = serializers.CharField(
-        label='Новый пароль')
-    current_password = serializers.CharField(
-        label='Текущий пароль')
-
-    def validate_current_password(self, current_password):
-        user = self.context['request'].user
-        if not authenticate(
-                username=user.email,
-                password=current_password):
-            raise serializers.ValidationError(
-                'Не удается войти в систему с '
-                'предоставленными учетными данными.',
-                code='authorization')
-        return current_password
-
-    def validate_new_password(self, new_password):
-        validators.validate_password(new_password)
-        return new_password
-
-    def create(self, validated_data):
-        user = self.context['request'].user
-        password = make_password(
-            validated_data.get('new_password'))
-        user.password = password
-        user.save()
-        return validated_data
 
 
 class RecipeSerializer(serializers.ModelSerializer):
