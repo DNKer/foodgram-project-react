@@ -41,8 +41,8 @@ urlpatterns = [
         AuthToken.as_view(),
         name='login'),
     path('users/set_password/',
-        set_password,
-        name='set_password'),
+         set_password,
+         name='set_password'),
     path('', include(router_v1.urls)),
     path('', include('djoser.urls')),
     path(
