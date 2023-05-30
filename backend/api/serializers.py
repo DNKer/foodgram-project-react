@@ -33,9 +33,9 @@ class AuthSerializer(serializers.Serializer):
         label='Токен',
         read_only=True)
 
-    def validate(self, data):
-        email = data.get('email')
-        password = data.get('password')
+    def validate(self, attrs):
+        email = attrs.get('email')
+        password = attrs.get('password')
         if email and password:
             user = authenticate(
                 request=self.context.get('request'),
@@ -51,8 +51,8 @@ class AuthSerializer(serializers.Serializer):
                 'Необходимо указать "адрес '
                 'электронной почты" и "пароль"',
                 code='authorization')
-        data['user'] = user
-        return data
+        attrs['user'] = user
+        return attrs
 
 
 class TagSerializer(serializers.ModelSerializer):
