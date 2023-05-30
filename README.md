@@ -8,7 +8,7 @@
 
 На этом сервисе пользователи смогут публиковать рецепты, подписываться на публикации других пользователей, добавлять понравившиеся рецепты в список «Избранное», а перед походом в магазин скачивать сводный список продуктов, необходимых для приготовления одного или нескольких выбранных блюд.
 
-<img src="frontend\public\young-woman-26345588.png" alt="drawing" width="500"/>
+<img src="frontend\src\images\young-woman-26345588.png" alt="drawing" width="500"/>
 
 ## Технологии.
 [![Python](https://img.shields.io/badge/-Python-464646?style=plastic&logo=Python&logoColor=56C0C0&color=008080)](https://www.python.org/)

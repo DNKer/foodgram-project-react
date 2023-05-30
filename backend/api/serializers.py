@@ -97,6 +97,10 @@ class UserSerializer(serializers.ModelSerializer):
                   'first_name', 'last_name',
                   'is_subscribed')
 
+    def create(self, validated_data):
+        validated_data['password'] = make_password(validated_data['password'])
+        return super(UserSerializer, self).create(validated_data)
+
     def get_is_subscribed(self, obj):
         """ Проверка подписки. """
         user = self.context.get('request').user
@@ -115,6 +119,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
         fields = (
             'id', 'email', 'username',
             'first_name', 'last_name', 'password',)
+
 
     def validate_password(self, password):
         validators.validate_password(password)
