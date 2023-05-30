@@ -31,6 +31,9 @@ class User(AbstractUser):
         blank=False,
         help_text='Введите фамилию'
     )
+    is_active = models.BooleanField(
+        default=True
+    )
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
