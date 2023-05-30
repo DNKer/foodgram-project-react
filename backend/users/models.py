@@ -3,14 +3,6 @@ from django.db import models
 
 
 class User(AbstractUser):
-    username = models.CharField(
-        'Уникальное имя пользователя',
-        max_length=150,
-        db_index=True,
-        unique=True,
-        blank=False,
-        help_text='Введите уникальное имя пользователя'
-    )
     email = models.EmailField(
         'Электронная почта',
         max_length=254,
