@@ -7,8 +7,7 @@ from django.core.management import BaseCommand
 from recipes.models import Ingredient
 
 
-DIRECTORY = Path(__file__).resolve().parents[5]
-FILE: str = f'{DIRECTORY}/data/ingredients.csv'
+FILE: str = 'recipes/data/ingredients.csv'
 
 
 def import_csv_data() -> None:
