@@ -1,7 +1,6 @@
 import datetime
 import csv
 import os
-from pathlib import Path
 
 from django.core.management import BaseCommand
 
