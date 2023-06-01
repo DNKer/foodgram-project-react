@@ -24,6 +24,8 @@ DEBUG = os.getenv('DEBUG', default=False)
 ALLOWED_HOSTS = os.environ.get(
     'ALLOWED_HOSTS', default='localhost').split()
 
+AUTH_USER_MODEL = 'users.User'
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -31,12 +33,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'recipes.apps.RecipesConfig',
     'users.apps.UsersConfig',
+    'recipes.apps.RecipesConfig',
     'api.apps.ApiConfig',
-    'djoser',
     'rest_framework',
     'rest_framework.authtoken',
+    'djoser',
     'django_filters',
 
 ]
@@ -118,8 +120,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-AUTH_USER_MODEL = 'users.User'
-
 LANGUAGE_CODE = 'ru-Ru'
 
 TIME_ZONE = 'Asia/Yekaterinburg'
@@ -157,26 +157,26 @@ REST_FRAMEWORK = {
         'rest_framework.filters.SearchFilter',
     ],
     'DEFAULT_PAGINATION_CLASS':
-        'api.pagination.LimitOffsetPagination',
-        'PAGE_SIZE': DEFAULT_PAGE_SIZE,
+        'api.pagination.LimitPageNumberPagination',
+    'PAGE_SIZE': DEFAULT_PAGE_SIZE,
 }
 
 DJOSER = {
     'LOGIN_FIELD': 'email',
 
     "SERIALIZERS": {
-        "user_create": "api.serializers.UserCreateSerializer",
+        'user_create': 'api.serializers.UserCreateSerializer',
         'user_list': 'api.serializers.UserSerializer',
-        "user": "api.serializers.UserSerializer",
-        "current_user": "api.serializers.UserSerializer",
+        'user': 'api.serializers.UserSerializer',
+        'current_user': 'api.serializers.UserSerializer',
     },
 
-    "PERMISSIONS": {
-        "set_password": ["rest_framework.permissions.IsAuthenticated"],
-        "user": ["rest_framework.permissions.AllowAny"],
-        "user_list": ["rest_framework.permissions.AllowAny"],
-        "token_create": ["rest_framework.permissions.AllowAny"],
-        "token_destroy": ["rest_framework.permissions.IsAuthenticated"],
+    'PERMISSIONS': {
+        'set_password': ['rest_framework.permissions.IsAuthenticated'],
+        'user': ['djoser.permissions.CurrentUserOrAdminOrReadOnly'],
+        'user_list': ['rest_framework.permissions.AllowAny'],
+        'token_create': ['rest_framework.permissions.AllowAny'],
+        'token_destroy': ['rest_framework.permissions.IsAuthenticated'],
     },
-    "HIDE_USERS": False,
+    'HIDE_USERS': False,
 }
