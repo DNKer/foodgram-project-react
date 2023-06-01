@@ -8,7 +8,7 @@ from recipes.models import Ingredient
 
 
 data_path = settings.BASE_DIR
-FILE = f'{data_path}\\data\\ingredients.csv'
+FILE = f'{data_path}/data/ingredients.csv'
 
 
 def import_csv_data() -> None:
