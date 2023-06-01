@@ -61,11 +61,10 @@ jobs:
         username: ${{ secrets.USER }}
         key: ${{ secrets.SSH_KEY }}
         script: |
-          docker logout
           docker rm -v -f $(docker ps -qa)
           sudo systemctl stop nginx
-          sudo docker pull ${{ secrets.DOCKER_USERNAME }}/foodgram_backend:latest
-          sudo docker pull ${{ secrets.DOCKER_USERNAME }}/foodgram_frontend:latest
+          sudo docker pull dnker/foodgram_backend:latest
+          sudo docker pull dnker/foodgram_frontend:latest
           sudo docker-compose stop
           sudo docker-compose rm backend
     - name: docker-compose up
