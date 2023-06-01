@@ -1,13 +1,13 @@
 import datetime
 import csv
-import os
 
+from django.conf import settings
 from django.core.management import BaseCommand
 
 from recipes.models import Ingredient
 
-DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-FILE: str = f'{DIR}/data/ingredients.csv'
+
+FILE: str = f'{settings.BASE_DIR}/data/ingredients.csv'
 
 
 def import_csv_data() -> None:
