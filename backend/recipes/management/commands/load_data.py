@@ -1,4 +1,5 @@
-import csv, datetime
+import csv
+import datetime
 
 from django.conf import settings
 from django.core.management import BaseCommand
