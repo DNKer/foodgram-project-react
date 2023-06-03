@@ -20,10 +20,10 @@ SECRET_KEY = os.getenv(
     default='secret_code_must_be_here'
 )
 
-DEBUG = os.getenv('DEBUG', default=False)
+DEBUG = os.getenv('DEBUG', default=True)
 
 ALLOWED_HOSTS = os.environ.get(
-    'ALLOWED_HOSTS', default='localhost').split()
+    'ALLOWED_HOSTS', default='127.0.0.1').split()
 
 AUTH_USER_MODEL = 'users.User'
 

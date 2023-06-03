@@ -1,14 +1,19 @@
+from django.core.exceptions import ValidationError
 from django_filters import rest_framework as filters
 from rest_framework.filters import SearchFilter
 
-from recipes.models import RecipeList
+from recipes.models import Ingredient, RecipeList
 
 
 class IngredientFilter(SearchFilter):
     """
     Поиск по имени Ингредиента.
     """
-    search_param = 'name'
+    name = filters.CharFilter(lookup_expr='istartswith')
+
+    class Meta:
+        model = Ingredient
+        fields = ('name',)
 
 
 class RecipeFilter(filters.FilterSet):
@@ -34,3 +39,20 @@ class RecipeFilter(filters.FilterSet):
         if value and self.request.user.is_authenticated:
             return queryset.filter(shopping_cart__user=self.request.user)
         return queryset
+
+
+class TagsFilter(filters.AllValuesMultipleFilter):
+    """
+    Фильтр для Тега.
+    """
+    def validate(self, value):
+        if self.required and not value:
+            raise ValidationError(
+                self.error_messages['required'],
+                code='required')
+        for val in value:
+            if val in self.choices and not self.valid_value(val):
+                raise ValidationError(
+                    self.error_messages['invalid_choice'],
+                    code='invalid_choice',
+                    params={'value': val},)
