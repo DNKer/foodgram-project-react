@@ -170,6 +170,11 @@ class RecipesViewSet(ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(author=self.request.user,)
 
+    def get_serializer_class(self):
+        if self.request.method == 'GET':
+            return RecipeSerializer
+        return RecipePostSerializer
+
     def new_favorite_or_cart(self, model, user, pk):
         recipe = get_object_or_404(RecipeList, recipe__id=pk)
         model.objects.create(user=user)
