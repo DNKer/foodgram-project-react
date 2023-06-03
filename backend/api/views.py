@@ -89,6 +89,11 @@ class UsersViewSet(UserViewSet):
     pagination_class = LimitPageNumberPagination
     permission_classes = (IsAuthenticated,)
 
+    @action(
+        methods=['GET'],
+        detail=False,
+        permission_classes=(IsAuthenticated,)
+    )
     def get_queryset(self):
         """ Получить список пользователей. """
         if self.request.user.is_authenticated:
@@ -96,11 +101,6 @@ class UsersViewSet(UserViewSet):
                 self.request.user.subscriber.filter(author=OuterRef('id'))))
                 .prefetch_related('subscriber', 'subscribing'))
         return User.objects.annotate(is_subscribed=Value(False))
-
-    def get_serializer_class(self):
-        if self.request.method.lower() == 'post':
-            return UserCreateSerializer
-        return UserSerializer
 
     def perform_create(self, serializer):
         password = make_password(self.request.data['password'])
