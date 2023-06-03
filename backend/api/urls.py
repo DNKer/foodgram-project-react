@@ -36,10 +36,6 @@ router_v1.register(
 )
 
 urlpatterns = [
-    path(
-        'auth/token/login/',
-        AuthToken.as_view(),
-        name='login'),
     path('users/set_password/',
          set_password,
          name='set_password'),
