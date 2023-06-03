@@ -8,19 +8,16 @@ class User(AbstractUser):
         max_length=254,
         db_index=True,
         unique=True,
-        blank=False,
         help_text='Введите адрес электронной почты'
     )
     first_name = models.CharField(
         'Имя',
         max_length=150,
-        blank=False,
         help_text='Введите имя'
     )
     last_name = models.CharField(
         'Фамилия',
         max_length=150,
-        blank=False,
         help_text='Введите фамилию'
     )
     is_active = models.BooleanField(
