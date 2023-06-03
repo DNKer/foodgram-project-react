@@ -90,7 +90,7 @@ class UserSerializer(serializers.ModelSerializer):
     Сериализатор для обработки данных о пользователях.
     """
     is_subscribed = serializers.BooleanField(read_only=True)
-
+   
     class Meta:
         model = User
         fields = ('id', 'email', 'username',
@@ -110,6 +110,8 @@ class UserCreateSerializer(serializers.ModelSerializer):
     """
     Сериализатор для создания пользователя.
     """
+    first_name = serializers.CharField()
+    last_name = serializers.CharField()
     class Meta:
         model = User
         fields = (
