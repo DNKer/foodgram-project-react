@@ -102,6 +102,11 @@ class UsersViewSet(UserViewSet):
                 .prefetch_related('subscriber', 'subscribing'))
         return User.objects.annotate(is_subscribed=Value(False))
 
+    def get_serializer_class(self):
+        if self.request.method.lower() == 'post':
+            return UserCreateSerializer
+        return UserSerializer
+
     def perform_create(self, serializer):
         password = make_password(self.request.data['password'])
         serializer.save(password=password)
