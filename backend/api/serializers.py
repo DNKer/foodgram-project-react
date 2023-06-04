@@ -16,46 +16,10 @@ from recipes.models import (
 User = get_user_model()
 
 
-class AuthSerializer(serializers.Serializer):
-    """
-    Сериализатор формы авторизации.
-    """
-
-    email = serializers.CharField(
-        label='Электронная почта',
-        write_only=True)
-    password = serializers.CharField(
-        label='Пароль',
-        style={'input_type': 'password'},
-        trim_whitespace=False,
-        write_only=True)
-    token = serializers.CharField(
-        label='Токен',
-        read_only=True)
-
-    def validate(self, data):
-        email = data.get('email')
-        password = data.get('password')
-        if email and password:
-            user = authenticate(
-                request=self.context.get('request'),
-                email=email,
-                password=password)
-            if not user:
-                raise serializers.ValidationError(
-                    'Не удается войти в систему с '
-                    'указанными учетными данными.',
-                    code='authorization')
-        else:
-            raise serializers.ValidationError(
-                'Необходимо указать "адрес '
-                'электронной почты" и "пароль"',
-                code='authorization')
-        data['user'] = user
-        return data
-
-
 class UserPasswordSerializer(serializers.Serializer):
+    """
+    Сериализатор для изменения пароля.
+    """
     new_password = serializers.CharField(
         label='Новый пароль')
     current_password = serializers.CharField(
@@ -122,7 +86,13 @@ class UserCreateSerializer(serializers.ModelSerializer):
         fields = (
             'id', 'email', 'username',
             'first_name', 'last_name', 'password',)
-        extra_kwargs = {'password': {'write_only': True}}
+        extra_kwargs = {
+            'email': {'required': True},
+            'username': {'required': True},
+            'password': {'required': True},
+            'first_name': {'required': True},
+            'last_name': {'required': True},
+        }
 
     def validate_password(self, password):
         validators.validate_password(password)
