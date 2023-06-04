@@ -36,6 +36,7 @@ router_v1.register(
 
 urlpatterns = [
     path('', include(router_v1.urls)),
+    path('', include('djoser.urls')),
     path('users/set_password/',
          set_password,
          name='set_password'),

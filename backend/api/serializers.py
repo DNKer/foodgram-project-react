@@ -110,8 +110,12 @@ class UserCreateSerializer(serializers.ModelSerializer):
     """
     Сериализатор для создания пользователя.
     """
-    first_name = serializers.CharField()
-    last_name = serializers.CharField()
+    email = serializers.EmailField(
+        validators=[validators.UniqueValidator(
+            queryset=User.objects.all())])
+    username = serializers.CharField(
+        validators=[validators.UniqueValidator(
+            queryset=User.objects.all())])
 
     class Meta:
         model = User

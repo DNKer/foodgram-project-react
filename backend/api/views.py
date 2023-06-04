@@ -87,13 +87,8 @@ class UsersViewSet(UserViewSet):
     """
     serializer_class = UserSerializer
     pagination_class = LimitPageNumberPagination
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (AllowAny,)
 
-    @action(
-        methods=['GET'],
-        detail=False,
-        permission_classes=(IsAuthenticated,)
-    )
     def get_queryset(self):
         """ Получить список пользователей. """
         if self.request.user.is_authenticated:
