@@ -1,4 +1,4 @@
-from django.contrib.auth import authenticate, get_user_model
+from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import make_password
 from django.db.models.expressions import Exists, OuterRef, Value
 from django_filters.rest_framework import DjangoFilterBackend
