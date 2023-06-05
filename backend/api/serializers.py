@@ -16,6 +16,57 @@ from recipes.models import (
 User = get_user_model()
 
 
+class UserCreateSerializer(serializers.ModelSerializer):
+    """
+    Сериализатор для создания пользователя.
+    """
+    email = serializers.EmailField(
+        validators=[validators.UniqueValidator(
+            queryset=User.objects.all())])
+    username = serializers.CharField(
+        validators=[validators.UniqueValidator(
+            queryset=User.objects.all())])
+
+    class Meta:
+        model = User
+        fields = (
+            'id', 'email', 'username',
+            'first_name', 'last_name',
+            'password', 'is_active')
+        extra_kwargs = {
+            'email': {'required': True},
+            'username': {'required': True},
+            'password': {'required': True},
+            'first_name': {'required': True},
+            'last_name': {'required': True},
+        }
+
+    def validate_password(self, password):
+        validators.validate_password(password)
+        return password
+
+
+class UserSerializer(serializers.ModelSerializer):
+    """
+    Сериализатор для обработки данных о пользователях.
+    """
+    is_subscribed = serializers.BooleanField(read_only=True)
+
+    class Meta:
+        model = User
+        fields = ('id', 'email', 'username',
+                  'first_name', 'last_name',
+                  'is_subscribed', 'is_active')
+
+    def get_is_subscribed(self, obj):
+        """ Проверка подписки. """
+        user = self.context.get('request').user
+        if user.is_anonymous:
+            return False
+        return Subscribe.objects.filter(
+            user=user, author=obj.id).exists()
+
+
 class UserPasswordSerializer(serializers.Serializer):
     """
     Сериализатор для изменения пароля.
@@ -47,56 +98,6 @@ class UserPasswordSerializer(serializers.Serializer):
         user.password = password
         user.save()
         return validated_data
-
-
-class UserSerializer(serializers.ModelSerializer):
-    """
-    Сериализатор для обработки данных о пользователях.
-    """
-    is_subscribed = serializers.BooleanField(read_only=True)
-
-    class Meta:
-        model = User
-        fields = ('id', 'email', 'username',
-                  'first_name', 'last_name',
-                  'is_subscribed')
-
-    def get_is_subscribed(self, obj):
-        """ Проверка подписки. """
-        user = self.context.get('request').user
-        if user.is_anonymous:
-            return False
-        return Subscribe.objects.filter(
-            user=user, author=obj.id).exists()
-
-
-class UserCreateSerializer(serializers.ModelSerializer):
-    """
-    Сериализатор для создания пользователя.
-    """
-    email = serializers.EmailField(
-        validators=[validators.UniqueValidator(
-            queryset=User.objects.all())])
-    username = serializers.CharField(
-        validators=[validators.UniqueValidator(
-            queryset=User.objects.all())])
-
-    class Meta:
-        model = User
-        fields = (
-            'id', 'email', 'username',
-            'first_name', 'last_name', 'password',)
-        extra_kwargs = {
-            'email': {'required': True},
-            'username': {'required': True},
-            'password': {'required': True},
-            'first_name': {'required': True},
-            'last_name': {'required': True},
-        }
-
-    def validate_password(self, password):
-        validators.validate_password(password)
-        return password
 
 
 class TagSerializer(serializers.ModelSerializer):
