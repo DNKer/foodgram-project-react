@@ -87,7 +87,7 @@ class UsersViewSet(UserViewSet):
     """
     serializer_class = UserSerializer
     pagination_class = LimitPageNumberPagination
-    permission_classes = (AllowAny,)
+    permission_classes = (IsAuthenticatedOrReadOnly,)
 
     def get_queryset(self):
         """ Получить список пользователей. """
@@ -98,6 +98,8 @@ class UsersViewSet(UserViewSet):
         return User.objects.annotate(is_subscribed=Value(False))
 
     def get_serializer_class(self):
+        if self.action == 'subscribe':
+            return SubscribeSerializer
         if self.request.method.lower() == 'post':
             return UserCreateSerializer
         return UserSerializer
@@ -111,7 +113,7 @@ class UsersViewSet(UserViewSet):
             detail=True,
             permission_classes=(IsAuthenticated),)
     def subscribe(self, request, author_id):
-        """ Подписаться / отписаться. """
+        """ Добавляет и удаляет пользователей в подписчики. """
         author = get_object_or_404(User, id=author_id)
         queryset = Subscribe.objects.filter(user=request.user,
                                             author=author)

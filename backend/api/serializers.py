@@ -78,16 +78,11 @@ class UserCreateSerializer(serializers.ModelSerializer):
             'first_name': {'required': True},
             'last_name': {'required': True},
         }
-
-        def validate_password(self, password):
-            validators.validate_password(password=password, user=User)
+        
+        @staticmethod
+        def validate_password(password):
+            validators.validate_password(password)
             return password
-
-        def create(self, validated_data):
-            user = User.objects.create_user(**validated_data)
-            user.is_active = False
-            user.save()
-            return user
 
 
 class UserSerializer(serializers.ModelSerializer):
