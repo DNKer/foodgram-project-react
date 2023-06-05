@@ -20,7 +20,6 @@ class AuthSerializer(serializers.Serializer):
     """
     Сериализатор формы авторизации.
     """
-
     email = serializers.CharField(
         label='Электронная почта',
         write_only=True)

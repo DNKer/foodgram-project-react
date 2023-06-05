@@ -12,6 +12,8 @@ from rest_framework.viewsets import (
     ModelViewSet,
     ReadOnlyModelViewSet
 )
+from rest_framework.authtoken.models import Token
+from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.permissions import (
     AllowAny,
     IsAuthenticated,
@@ -42,6 +44,24 @@ from .services import collect_shopping_cart
 
 
 User = get_user_model()
+
+
+class AuthToken(ObtainAuthToken):
+    """
+    Авторизация пользователя.
+    """
+
+    serializer_class = AuthSerializer
+    permission_classes = (AllowAny,)
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data['user']
+        token, created = Token.objects.get_or_create(user=user)
+        return Response(
+            {'auth_token': token.key},
+            status=status.HTTP_201_CREATED)
 
 
 @api_view(['post'])
