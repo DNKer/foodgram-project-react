@@ -31,6 +31,7 @@ from recipes.models import (
     Tag
 )
 from .serializers import (
+    AuthSerializer,
     IngredientSerializer,
     FavoriteOrSubscribeSerializer,
     RecipeSerializer,
