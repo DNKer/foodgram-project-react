@@ -61,7 +61,7 @@ class AuthToken(ObtainAuthToken):
         user = serializer.validated_data['user']
         token, created = Token.objects.get_or_create(user=user)
         return Response({'token': token.key},
-            status=status.HTTP_201_CREATED)
+                        status=status.HTTP_201_CREATED)
 
 
 @api_view(['post'])
