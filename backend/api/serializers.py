@@ -58,26 +58,12 @@ class UserCreateSerializer(serializers.ModelSerializer):
     """
     Сериализатор для создания пользователя.
     """
-    email = serializers.EmailField(
-        validators=[validators.UniqueValidator(
-            queryset=User.objects.all())])
-    username = serializers.CharField(
-        validators=[validators.UniqueValidator(
-            queryset=User.objects.all())])
-
     class Meta:
         model = User
-        fields = (
-            'id', 'email', 'username',
-            'first_name', 'last_name',
-            'password', 'is_active')
-        extra_kwargs = {
-            'email': {'required': True},
-            'username': {'required': True},
-            'password': {'required': True},
-            'first_name': {'required': True},
-            'last_name': {'required': True},
-        }
+        fields = tuple(User.REQUIRED_FIELDS) + (
+            User.USERNAME_FIELD,
+            'password',
+        )
 
         @staticmethod
         def validate_password(password):
@@ -95,7 +81,7 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ('id', 'email', 'username',
                   'first_name', 'last_name',
-                  'is_subscribed', 'is_active')
+                  'is_subscribed')
 
     def get_is_subscribed(self, obj):
         """ Проверка подписки. """

@@ -98,8 +98,6 @@ class UsersViewSet(UserViewSet):
         return User.objects.annotate(is_subscribed=Value(False))
 
     def get_serializer_class(self):
-        if self.action == 'subscribe':
-            return SubscribeSerializer
         if self.request.method.lower() == 'post':
             return UserCreateSerializer
         return UserSerializer
@@ -163,7 +161,6 @@ class RecipesViewSet(ModelViewSet):
     """
     Список рецептов.
     """
-    queryset = RecipeList.objects.all()
     serializer_class = RecipeSerializer
     pagination_class = LimitPageNumberPagination
     filter_backends = (DjangoFilterBackend,)

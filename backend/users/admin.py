@@ -1,6 +1,5 @@
 from django.contrib import admin
 from django.contrib.auth import get_user_model
-from rest_framework.authtoken.admin import TokenAdmin
 
 User = get_user_model()
 
@@ -12,5 +11,4 @@ class UserAdmin(admin.ModelAdmin):
         'first_name', 'last_name',)
     search_fields = ('email', 'username', 'first_name', 'last_name')
     list_filter = ('email', 'first_name')
-    TokenAdmin.raw_id_fields = ['user']
     empty_value_display = '-пусто-'
