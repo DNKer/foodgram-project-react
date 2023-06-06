@@ -58,12 +58,12 @@ class UserCreateSerializer(serializers.ModelSerializer):
     """
     Сериализатор для создания пользователя.
     """
+
     class Meta:
         model = User
-        fields = tuple(User.REQUIRED_FIELDS) + (
-            User.USERNAME_FIELD,
-            'password',
-        )
+        fields = (
+            'id', 'email', 'username',
+            'first_name', 'last_name', 'password',)
 
         @staticmethod
         def validate_password(password):

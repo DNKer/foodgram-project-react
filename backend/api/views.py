@@ -87,7 +87,8 @@ class UsersViewSet(UserViewSet):
     """
     serializer_class = UserSerializer
     pagination_class = LimitPageNumberPagination
-    permission_classes = (IsAuthenticatedOrReadOnly,)
+    search_fields = ('username', 'email')
+    permission_classes = (AllowAny,)
 
     def get_queryset(self):
         """ Получить список пользователей. """
