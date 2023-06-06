@@ -12,7 +12,6 @@ from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.permissions import (
     AllowAny,
     IsAuthenticated,
-    IsAuthenticatedOrReadOnly,
 )
 
 from .filters import IngredientFilter, TagsFilter, RecipeFilter
@@ -92,12 +91,13 @@ class UserViewSet(DjoserUserViewSet):
                     context={'request': request})
                 return Response(serializer.data,
                                 status=status.HTTP_201_CREATED)
-
         elif request.method == 'DELETE':
             if Subscribe.objects.filter(user=request.user,
-                                     author=author).exists():
+                                        author=author
+                                        ).exists():
                 Subscribe.objects.filter(user=request.user,
-                                      author=author).delete()
+                                         author=author
+                                         ).delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(detail=False, permission_classes=(IsAuthenticated,))
