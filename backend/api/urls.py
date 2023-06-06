@@ -2,11 +2,12 @@ from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
 from .views import (
+    AuthToken,
     IngredientsViewSet,
     RecipesViewSet,
     set_password,
     TagsViewSet,
-    UsersViewSet
+    UserViewSet
 )
 
 
@@ -15,7 +16,7 @@ app_name = 'api'
 router_v1 = DefaultRouter()
 router_v1.register(
     'users',
-    UsersViewSet,
+    UserViewSet,
     basename='users'
 )
 router_v1.register(
@@ -35,6 +36,10 @@ router_v1.register(
 )
 
 urlpatterns = [
+    path(
+        'auth/token/login/',
+        AuthToken.as_view(),
+        name='login'),
     path('', include(router_v1.urls)),
     path('', include('djoser.urls')),
     path('users/set_password/',
