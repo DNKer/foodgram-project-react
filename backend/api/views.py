@@ -20,7 +20,7 @@ from rest_framework.permissions import (
     IsAuthenticatedOrReadOnly
 )
 
-from .filters import IngredientFilter, RecipeFilter
+from .filters import IngredientFilter, TagsFilter, RecipeFilter
 from .pagination import LimitPageNumberPagination
 from recipes.models import (
     FavoriteRecipe,
@@ -142,6 +142,7 @@ class TagsViewSet(ReadOnlyModelViewSet):
     permission_classes = (IsAuthenticatedOrReadOnly,)
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
+    filter_backends = (TagsFilter,)
     pagination_class = None
 
 
