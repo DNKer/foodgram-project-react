@@ -85,11 +85,12 @@ class UserViewSet(DjoserUserViewSet):
         if request.method == 'POST':
             if request.user.id == author.id:
                 raise ValueError('Нельзя подписаться на себя самого')
-            serializer = SubscribeSerializer(
-                Subscribe.objects.create(user=request.user, author=author),
-                context={'request': request})
-            return Response(serializer.data,
-                            status=status.HTTP_201_CREATED)
+            else:
+                serializer = SubscribeSerializer(
+                    Subscribe.objects.create(user=request.user, author=author),
+                    context={'request': request})
+                return Response(serializer.data,
+                                status=status.HTTP_201_CREATED)
         elif request.method == 'DELETE':
             if Subscribe.objects.filter(user=request.user,
                                         author=author
