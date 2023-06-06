@@ -189,7 +189,7 @@ class RecipesViewSet(ModelViewSet):
 
     @action(detail=True, methods=['POST', 'DELETE'],
             permission_classes=[IsAuthenticated])
-    def favorite(self, request, pk=None)
+    def favorite(self, request, pk=None):
         """
         Добавить рецепт в избранное или удалить из него.
         """
