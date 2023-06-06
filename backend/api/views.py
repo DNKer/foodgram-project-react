@@ -1,27 +1,23 @@
 from django.contrib.auth import get_user_model
-from django.contrib.auth.hashers import make_password
-from django.db.models.expressions import Exists, OuterRef, Value
 from django_filters.rest_framework import DjangoFilterBackend
 from django.http import HttpResponse
-from djoser.views import UserViewSet
-from rest_framework import status
+from djoser.views import UserViewSet as DjoserUserViewSet
+from rest_framework import status, viewsets
 from rest_framework.decorators import action, api_view
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
-from rest_framework.viewsets import (
-    ModelViewSet,
-    ReadOnlyModelViewSet
-)
+from rest_framework.viewsets import ReadOnlyModelViewSet
 from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.permissions import (
     AllowAny,
     IsAuthenticated,
-    IsAuthenticatedOrReadOnly
+    IsAuthenticatedOrReadOnly,
 )
 
 from .filters import IngredientFilter, TagsFilter, RecipeFilter
 from .pagination import LimitPageNumberPagination
+from .permissions import IsAdminOrReadOnly, IsOwnerOrReadOnly
 from recipes.models import (
     FavoriteRecipe,
     Ingredient,
@@ -37,9 +33,7 @@ from .serializers import (
     RecipeSerializer,
     SubscribeSerializer,
     TagSerializer,
-    UserCreateSerializer,
-    UserPasswordSerializer,
-    UserSerializer
+    UserPasswordSerializer
 )
 from .services import collect_shopping_cart
 
@@ -80,49 +74,30 @@ def set_password(request):
         status=status.HTTP_400_BAD_REQUEST)
 
 
-class UsersViewSet(UserViewSet):
+class UserViewSet(DjoserUserViewSet):
     """
     Пользователи и подписки.
     """
-    serializer_class = UserSerializer
-    pagination_class = LimitPageNumberPagination
-    search_fields = ('username', 'email')
-    permission_classes = (AllowAny,)
+    lookup_url_kwarg = 'author_id'
 
-    def get_queryset(self):
-        """ Получить список пользователей. """
-        if self.request.user.is_authenticated:
-            return (User.objects.annotate(is_subscribed=Exists(
-                self.request.user.subscriber.filter(author=OuterRef('id'))))
-                .prefetch_related('subscriber', 'subscribing'))
-        return User.objects.annotate(is_subscribed=Value(False))
-
-    def get_serializer_class(self):
-        if self.request.method.lower() == 'post':
-            return UserCreateSerializer
-        return UserSerializer
-
-    def perform_create(self, serializer):
-        """ Создание пароля в формате postres. """
-        password = make_password(self.request.data['password'])
-        serializer.save(password=password)
-
-    @action(methods=['POST', 'DELETE'],
-            detail=True,
-            permission_classes=(IsAuthenticated),)
+    @action(methods=['POST', 'DELETE'], detail=True,)
     def subscribe(self, request, author_id):
-        """ Добавляет и удаляет пользователей в подписчики. """
         author = get_object_or_404(User, id=author_id)
-        queryset = Subscribe.objects.filter(user=request.user,
-                                            author=author)
         if request.method == 'POST':
-            serializer = SubscribeSerializer(
-                Subscribe.objects.create(user=request.user, author=author),
-                context={'request': request})
-            return Response(serializer.data,
-                            status=status.HTTP_201_CREATED)
-        if queryset.exists():
-            queryset.delete()
+            if request.user.id == author.id:
+                raise ValueError('Нельзя подписаться на себя самого')
+            else:
+                serializer = SubscribeSerializer(
+                    Subscribe.objects.create(user=request.user, author=author),
+                    context={'request': request})
+                return Response(serializer.data,
+                                status=status.HTTP_201_CREATED)
+
+        elif request.method == 'DELETE':
+            if Subscribe.objects.filter(user=request.user,
+                                     author=author).exists():
+                Subscribe.objects.filter(user=request.user,
+                                      author=author).delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(detail=False, permission_classes=(IsAuthenticated,))
@@ -139,7 +114,7 @@ class TagsViewSet(ReadOnlyModelViewSet):
     """
     Список тэгов.
     """
-    permission_classes = (IsAuthenticatedOrReadOnly,)
+    permission_classes = (IsAdminOrReadOnly,)
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
     filter_backends = (TagsFilter,)
@@ -150,7 +125,7 @@ class IngredientsViewSet(ReadOnlyModelViewSet):
     """
     Список ингридиентов.
     """
-    permission_classes = (IsAuthenticatedOrReadOnly,)
+    permission_classes = (IsAdminOrReadOnly,)
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
     filter_backends = (IngredientFilter,)
@@ -158,7 +133,7 @@ class IngredientsViewSet(ReadOnlyModelViewSet):
     pagination_class = None
 
 
-class RecipesViewSet(ModelViewSet):
+class RecipesViewSet(viewsets.ModelViewSet):
     """
     Список рецептов.
     """
@@ -166,7 +141,7 @@ class RecipesViewSet(ModelViewSet):
     pagination_class = LimitPageNumberPagination
     filter_backends = (DjangoFilterBackend,)
     filter_class = RecipeFilter
-    permission_classes = (IsAuthenticatedOrReadOnly,)
+    permission_classes = (IsOwnerOrReadOnly)
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user,)

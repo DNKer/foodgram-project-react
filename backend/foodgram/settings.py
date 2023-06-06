@@ -153,7 +153,7 @@ ACCOUNT_AUTHENTICATION_METHOD = 'email'
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',
+        'rest_framework.permissions.AllowAny',
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
@@ -169,20 +169,7 @@ REST_FRAMEWORK = {
 
 DJOSER = {
     'LOGIN_FIELD': 'email',
-
-    "SERIALIZERS": {
-        'user_create': 'api.serializers.UserCreateSerializer',
-        'user_list': 'api.serializers.UserSerializer',
-        'user': 'api.serializers.UserSerializer',
-        'current_user': 'api.serializers.UserSerializer',
-    },
-
-    'PERMISSIONS': {
-        'set_password': ['rest_framework.permissions.IsAuthenticated'],
-        'user': ['djoser.permissions.CurrentUserOrAdminOrReadOnly'],
-        'user_list': ['rest_framework.permissions.AllowAny'],
-        'token_create': ['rest_framework.permissions.AllowAny'],
-        'token_destroy': ['rest_framework.permissions.IsAuthenticated'],
-    },
     'HIDE_USERS': False,
-}
+    'SERIALIZERS': {'user': 'api.serializers.UserSerializer'},
+    'PERMISSIONS': {'user': ['rest_framework.permissions.IsAuthenticated'],
+                    'user_list': ['rest_framework.permissions.AllowAny']}}

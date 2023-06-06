@@ -54,23 +54,6 @@ class AuthSerializer(serializers.Serializer):
         return data
 
 
-class UserCreateSerializer(serializers.ModelSerializer):
-    """
-    Сериализатор для создания пользователя.
-    """
-
-    class Meta:
-        model = User
-        fields = (
-            'id', 'email', 'username',
-            'first_name', 'last_name', 'password',)
-
-        @staticmethod
-        def validate_password(password):
-            validators.validate_password(password)
-            return password
-
-
 class UserSerializer(serializers.ModelSerializer):
     """
     Сериализатор для обработки данных о пользователях.
@@ -290,7 +273,6 @@ class RecipeSerializer(serializers.ModelSerializer):
         return instance
 
     def to_internal_value(self, data):
-        """ Декодируем картику (преобразуем тип данных). """
         ingredients = data.pop('ingredients')
         tags = data.pop('tags')
         data = super().to_internal_value(data)
