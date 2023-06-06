@@ -60,8 +60,7 @@ class AuthToken(ObtainAuthToken):
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data['user']
         token, created = Token.objects.get_or_create(user=user)
-        return Response(
-            {'auth_token': token.key},
+        return Response({'token': token.key},
             status=status.HTTP_201_CREATED)
 
 
@@ -172,6 +171,9 @@ class RecipesViewSet(ModelViewSet):
         serializer.save(author=self.request.user,)
 
     def new_favorite_or_cart(self, model, user, pk):
+        if model.objects.filter(user=user, recipe__id=pk).exists():
+            return Response({'errors': 'Рецепт уже добавлен!'},
+                            status=status.HTTP_400_BAD_REQUEST)
         recipe = get_object_or_404(RecipeList, recipe__id=pk)
         model.objects.create(user=user)
         serializer = FavoriteOrSubscribeSerializer(recipe, is_favorited=True)
@@ -181,11 +183,13 @@ class RecipesViewSet(ModelViewSet):
         obj = model.objects.filter(user=user, recipe__id=pk)
         if obj.exists():
             obj.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response({'errors': 'Рецепт уже удален!'},
+                        status=status.HTTP_400_BAD_REQUEST)
 
     @action(detail=True, methods=['POST', 'DELETE'],
             permission_classes=[IsAuthenticated])
-    def favorite(self, request, pk=None) -> Response:
+    def favorite(self, request, pk=None)
         """
         Добавить рецепт в избранное или удалить из него.
         """
