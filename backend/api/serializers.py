@@ -9,9 +9,9 @@ from recipes.models import (
     Ingredient,
     IngredientInRecipe,
     RecipeList,
-    Subscribe,
     Tag,
 )
+from users.models import Subscribe
 
 
 User = get_user_model()
