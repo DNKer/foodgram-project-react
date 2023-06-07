@@ -2,9 +2,7 @@ from django.contrib import admin
 
 from .models import (
     Ingredient,
-    IngredientInRecipe,
     FavoriteRecipe,
-    Subscribe,
     RecipeList,
     ShoppingCart,
     Tag
@@ -14,18 +12,15 @@ EMPTY_STRING: str = '-пусто-'
 QUANTITY: int = 6
 
 
-class RecipeIngredientAdmin(admin.StackedInline):
-    model = IngredientInRecipe
-    autocomplete_fields = ('ingredient',)
+class RecipeIngredientInline(admin.TabularInline):
+    model = RecipeList.ingredients.through
+    extra = 1
 
 
 @admin.register(RecipeList)
 class RecipeListAdmin(admin.ModelAdmin):
-    list_display = (
-        'id', 'get_author', 'name', 'text',
-        'cooking_time', 'get_tags', 'get_ingredients',
-        'pub_date', 'get_favorite_count'
-    )
+    inlines = (RecipeIngredientInline,)
+    list_display = ('author', 'name', 'text', 'get_favorite_count')
     search_fields = (
         'name', 'cooking_time',
         'author__email', 'ingredients__name'
@@ -73,15 +68,6 @@ class IngredientAdmin(admin.ModelAdmin):
         'id', 'name', 'measurement_unit',)
     search_fields = (
         'name', 'measurement_unit',)
-    empty_value_display = EMPTY_STRING
-
-
-@admin.register(Subscribe)
-class SubscribeAdmin(admin.ModelAdmin):
-    list_display = (
-        'id', 'user', 'author', 'created',)
-    search_fields = (
-        'user__email', 'author__email',)
     empty_value_display = EMPTY_STRING
 
 
