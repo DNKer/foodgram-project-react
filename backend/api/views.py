@@ -123,12 +123,9 @@ class RecipesViewSet(viewsets.ModelViewSet):
         serializer.save(author=self.request.user,)
 
     def new_favorite_or_cart(self, model, user, pk):
-        if model.objects.filter(user=user, recipe__id=pk).exists():
-            return Response({'errors': 'Рецепт уже добавлен!'},
-                            status=status.HTTP_400_BAD_REQUEST)
-        recipe = get_object_or_404(RecipeList, recipe__id=pk)
+        recipe = get_object_or_404(RecipeList, id=pk)
         model.objects.create(user=user, recipe=recipe)
-        serializer = FavoriteOrSubscribeSerializer(recipe, is_favorited=True)
+        serializer = FavoriteOrSubscribeSerializer(recipe)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def remove_favorite_or_cart(self, model, user, pk):
