@@ -144,24 +144,32 @@ class IngredientInRecipe(models.Model):
         ]
 
 
+class RecipeUserList(models.Model):
+    """Общий класс-предок для Избранное и Покупка."""
+    recipe = models.ForeignKey(RecipeList, on_delete=models.CASCADE,
+                               verbose_name='Рецепт')
+    user = models.ForeignKey(User, on_delete=models.CASCADE,
+                             verbose_name='Пользователь')
+
+    class Meta:
+        abstract = True
+        ordering = ('user', 'recipe')
+
+
 class FavoriteRecipe(models.Model):
     """
     Модель Избранное.
     """
-    user = models.OneToOneField(
-        User,
-        on_delete=models.CASCADE,
-        null=True,
-        related_name='favorite_recipe',
-        verbose_name='Пользователь')
-    recipe = models.ManyToManyField(
-        RecipeList,
-        related_name='favorite_recipe',
-        verbose_name='Избранный рецепт')
-
-    class Meta:
-        verbose_name = 'Избранный рецепт'
-        verbose_name_plural = 'Избранные рецепты'
+    class Meta(RecipeUserList.Meta):
+        default_related_name = 'favorites'
+        verbose_name = 'Избранное'
+        verbose_name_plural = 'Избранное'
+        constraints = [
+            models.UniqueConstraint(
+                fields=['recipe', 'user'],
+                name='unique_favor_list_user'
+            )
+        ]
 
     def __str__(self):
         return (f'Пользователь {self.user} '
@@ -172,22 +180,17 @@ class ShoppingCart(models.Model):
     """
     Модель Покупка.
     """
-    user = models.OneToOneField(
-        User,
-        on_delete=models.CASCADE,
-        related_name='shopping_cart',
-        null=True,
-        verbose_name='Пользователь')
-    recipe = models.ManyToManyField(
-        RecipeList,
-        related_name='shopping_cart',
-        verbose_name='Покупка')
-
-    class Meta:
+    class Meta(RecipeUserList.Meta):
+        default_related_name = 'shopping_cart'
         verbose_name = 'Покупка'
         verbose_name_plural = 'Покупки'
-        ordering = ['-id']
+        constraints = [
+            models.UniqueConstraint(
+                fields=['recipe', 'user'],
+                name='unique_cart_list_user'
+            )
+        ]
 
     def __str__(self):
         return (f'Пользователь {self.user} '
-                f'добавил {self.recipe} в покупки.')
+                f'добавил {self.recipe.name} в покупки.')
