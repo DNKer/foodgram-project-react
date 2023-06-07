@@ -149,7 +149,7 @@ class RecipesViewSet(viewsets.ModelViewSet):
             return self.new_favorite_or_cart(FavoriteRecipe,
                                              request.user, pk)
         return self.remove_favorite_or_cart(FavoriteRecipe,
-                                                request.user, pk)
+                                            request.user, pk)
 
     @action(detail=True, methods=['POST', 'DELETE'],
             permission_classes=[IsAuthenticated])
