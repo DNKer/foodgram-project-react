@@ -148,10 +148,8 @@ class RecipesViewSet(viewsets.ModelViewSet):
         if request.method == 'POST':
             return self.new_favorite_or_cart(FavoriteRecipe,
                                              request.user, pk)
-        elif request.method == 'DELETE':
-            return self.remove_favorite_or_cart(FavoriteRecipe,
+        return self.remove_favorite_or_cart(FavoriteRecipe,
                                                 request.user, pk)
-        return None
 
     @action(detail=True, methods=['POST', 'DELETE'],
             permission_classes=[IsAuthenticated])
@@ -161,9 +159,7 @@ class RecipesViewSet(viewsets.ModelViewSet):
         """
         if request.method == 'POST':
             return self.new_favorite_or_cart(ShoppingCart, request.user, pk)
-        elif request.method == 'DELETE':
-            return self.remove_favorite_or_cart(ShoppingCart, request.user, pk)
-        return None
+        return self.remove_favorite_or_cart(ShoppingCart, request.user, pk)
 
     @action(detail=False, methods=['GET'],
             permission_classes=(IsAuthenticated,))
