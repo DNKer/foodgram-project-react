@@ -5,14 +5,9 @@ from djoser.views import UserViewSet as DjoserUserViewSet
 from rest_framework import status, viewsets
 from rest_framework.decorators import action, api_view
 from rest_framework.generics import get_object_or_404
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ReadOnlyModelViewSet
-from rest_framework.authtoken.models import Token
-from rest_framework.authtoken.views import ObtainAuthToken
-from rest_framework.permissions import (
-    AllowAny,
-    IsAuthenticated,
-)
 
 from .filters import IngredientFilter, TagsFilter, RecipeFilter
 from .pagination import LimitPageNumberPagination
@@ -22,11 +17,9 @@ from recipes.models import (
     Ingredient,
     RecipeList,
     ShoppingCart,
-    Subscribe,
     Tag
 )
 from .serializers import (
-    AuthSerializer,
     IngredientSerializer,
     FavoriteOrSubscribeSerializer,
     RecipeSerializer,
@@ -35,26 +28,10 @@ from .serializers import (
     UserPasswordSerializer
 )
 from .services import collect_shopping_cart
+from users.models import Subscribe
 
 
 User = get_user_model()
-
-
-class AuthToken(ObtainAuthToken):
-    """
-    Авторизация пользователя.
-    """
-
-    serializer_class = AuthSerializer
-    permission_classes = (AllowAny,)
-
-    def post(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user = serializer.validated_data['user']
-        token, created = Token.objects.get_or_create(user=user)
-        return Response({'token': token.key},
-                        status=status.HTTP_201_CREATED)
 
 
 @api_view(['post'])
@@ -150,7 +127,7 @@ class RecipesViewSet(viewsets.ModelViewSet):
             return Response({'errors': 'Рецепт уже добавлен!'},
                             status=status.HTTP_400_BAD_REQUEST)
         recipe = get_object_or_404(RecipeList, recipe__id=pk)
-        model.objects.create(user=user)
+        model.objects.create(user=user, recipe=recipe)
         serializer = FavoriteOrSubscribeSerializer(recipe, is_favorited=True)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
@@ -171,8 +148,10 @@ class RecipesViewSet(viewsets.ModelViewSet):
         if request.method == 'POST':
             return self.new_favorite_or_cart(FavoriteRecipe,
                                              request.user, pk)
-        return self.remove_favorite_or_cart(FavoriteRecipe,
-                                            request.user, pk)
+        elif request.method == 'DELETE':
+            return self.remove_favorite_or_cart(FavoriteRecipe,
+                                                request.user, pk)
+        return None
 
     @action(detail=True, methods=['POST', 'DELETE'],
             permission_classes=[IsAuthenticated])
@@ -182,7 +161,9 @@ class RecipesViewSet(viewsets.ModelViewSet):
         """
         if request.method == 'POST':
             return self.new_favorite_or_cart(ShoppingCart, request.user, pk)
-        return self.remove_favorite_or_cart(ShoppingCart, request.user, pk)
+        elif request.method == 'DELETE':
+            return self.remove_favorite_or_cart(ShoppingCart, request.user, pk)
+        return None
 
     @action(detail=False, methods=['GET'],
             permission_classes=(IsAuthenticated,))

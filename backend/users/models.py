@@ -1,8 +1,18 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
+USER = 'user'
+ADMIN = 'admin'
+
 
 class User(AbstractUser):
+    ROLES = ((USER, USER), (ADMIN, ADMIN))
+
+    username = models.CharField(
+        verbose_name='Имя пользователя',
+        max_length=150,
+        unique=True,)
+
     email = models.EmailField(
         'Электронная почта',
         max_length=254,
@@ -29,5 +39,51 @@ class User(AbstractUser):
         verbose_name_plural = 'Пользователи'
         ordering = ('id',)
 
+    @property
+    def is_admin(self):
+        return self.is_staff or self.is_superuser
+
+    @property
+    def is_user(self):
+        return self.is_user
+
     def __str__(self):
-        return self.email
+        return f'@{self.username}: {self.email}.'
+
+
+class Subscribe(models.Model):
+    """
+    Модель Подписчик.
+    """
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='subscriber',
+        verbose_name='Подписчик'
+    )
+    author = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='subscribing',
+        verbose_name='Автор'
+    )
+    created = models.DateTimeField(
+        'Дата подписки',
+        auto_now_add=True)
+
+    class Meta:
+        verbose_name = 'Подписка'
+        verbose_name_plural = 'Подписки'
+        ordering = ['-id']
+        constraints = [
+            models.UniqueConstraint(
+                fields=['user', 'author'],
+                name='unique_subscribing')
+        ]
+
+    def __str__(self):
+        return (f'Пользователь {self.user} '
+                f'подписан на автора {self.author}')
+
+    def get_email_field_name(self):
+        return self.author.email

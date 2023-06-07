@@ -144,41 +144,6 @@ class IngredientInRecipe(models.Model):
         ]
 
 
-class Subscribe(models.Model):
-    """
-    Модель Подписчик.
-    """
-    user = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        related_name='subscriber',
-        verbose_name='Подписчик'
-    )
-    author = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        related_name='subscribing',
-        verbose_name='Автор'
-    )
-    created = models.DateTimeField(
-        'Дата подписки',
-        auto_now_add=True)
-
-    class Meta:
-        verbose_name = 'Подписка'
-        verbose_name_plural = 'Подписки'
-        ordering = ['-id']
-        constraints = [
-            models.UniqueConstraint(
-                fields=['user', 'author'],
-                name='unique_subscribing')
-        ]
-
-    def __str__(self):
-        return (f'Пользователь {self.user} '
-                f'подписан на автора {self.author}')
-
-
 class FavoriteRecipe(models.Model):
     """
     Модель Избранное.

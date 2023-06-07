@@ -1,9 +1,10 @@
 from django.contrib.auth import authenticate, get_user_model
 from django.contrib.auth.hashers import make_password
-from drf_extra_fields.fields import Base64ImageField
+from djoser.serializers import UserSerializer as UserHandleSerializer
 from rest_framework import serializers, validators
 from rest_framework.generics import get_object_or_404
 
+from .helpers import Base64ImageField
 from recipes.models import (
     Ingredient,
     IngredientInRecipe,
@@ -16,49 +17,11 @@ from recipes.models import (
 User = get_user_model()
 
 
-class AuthSerializer(serializers.Serializer):
-    """
-    Сериализатор формы авторизации.
-    """
-    email = serializers.CharField(
-        label='Электронная почта',
-        write_only=True)
-    password = serializers.CharField(
-        label='Пароль',
-        style={'input_type': 'password'},
-        trim_whitespace=False,
-        write_only=True)
-    token = serializers.CharField(
-        label='Токен',
-        read_only=True)
-
-    def validate(self, data):
-        email = data.get('email')
-        password = data.get('password')
-        if email and password:
-            user = authenticate(
-                request=self.context.get('request'),
-                email=email,
-                password=password)
-            if not user:
-                raise serializers.ValidationError(
-                    'Не удается войти в систему с '
-                    'указанными учетными данными.',
-                    code='authorization')
-        else:
-            raise serializers.ValidationError(
-                'Необходимо указать "адрес '
-                'электронной почты" и "пароль."',
-                code='authorization')
-        data['user'] = user
-        return data
-
-
-class UserSerializer(serializers.ModelSerializer):
+class UserSerializer(UserHandleSerializer):
     """
     Сериализатор для обработки данных о пользователях.
     """
-    is_subscribed = serializers.BooleanField(read_only=True)
+    is_subscribed = serializers.SerializerMethodField()
 
     class Meta:
         model = User
@@ -224,8 +187,7 @@ class RecipeSerializer(serializers.ModelSerializer):
     )
     image = Base64ImageField()
     author = UserSerializer(
-        read_only=True,
-        default=serializers.CurrentUserDefault()
+        read_only=True
     )
     cooking_time = serializers.IntegerField()
     ingredients = IngredientInRecipeSerializer(
