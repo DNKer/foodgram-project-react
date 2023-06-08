@@ -1,30 +1,26 @@
-import csv
 import datetime
+import json
 
-from django.conf import settings
 from django.core.management import BaseCommand
 
 from recipes.models import Ingredient
 
 
-FILE: str = f'{settings.BASE_DIR}/data/ingredients.csv'
+FILE: str = 'data/ingredients.json'
 
 
 def import_csv_data() -> None:
     """ Обработка файла csv. """
-    with open(FILE, 'r', encoding='UTF-8') as csvfile:
-        file_reader = csv.reader(csvfile)
-        for row in file_reader:
-            name, measurement_unit = row
-            Ingredient.objects.get_or_create(
-                name=name,
-                measurement_unit=measurement_unit)
-        csvfile.close()
+    with open(FILE, 'r') as file:
+        data = json.load(file)
+        for note in data:
+            Ingredient.objects.get_or_create(**note)
+    return None
 
 
 class Command(BaseCommand):
     """ Загрузка данных из csv файла. """
-    help = ('Загрузка данных из /data/ingredients.csv.'
+    help = ('Загрузка данных из /data/ingredients.json.'
             'Запуск: python manage.py load_data.')
 
     def handle(self, *args, **options) -> None:

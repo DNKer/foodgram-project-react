@@ -1,6 +1,22 @@
+import base64
+
+from django.core.files.base import ContentFile
 from django.db.models import F, Sum
+from rest_framework import serializers
 
 from recipes.models import IngredientInRecipe
+
+
+class Base64ImageField(serializers.ImageField):
+    """
+    Декодируем изображение.
+    """
+    def to_internal_value(self, data):
+        if isinstance(data, str) and data.startswith('data:image'):
+            format, imgstr = data.split(';base64,')
+            ext = format.split('/')[-1]
+            data = ContentFile(base64.b64decode(imgstr), name='temp.' + ext)
+        return super().to_internal_value(data)
 
 
 def collect_shopping_cart(user):

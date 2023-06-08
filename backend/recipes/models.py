@@ -156,7 +156,7 @@ class RecipeUserList(models.Model):
         ordering = ('user', 'recipe')
 
 
-class FavoriteRecipe(models.Model):
+class FavoriteRecipe(RecipeUserList):
     """
     Модель Избранное.
     """
@@ -176,7 +176,7 @@ class FavoriteRecipe(models.Model):
                 f'добавил {self.recipe} в избранное.')
 
 
-class ShoppingCart(models.Model):
+class ShoppingCart(RecipeUserList):
     """
     Модель Покупка.
     """
