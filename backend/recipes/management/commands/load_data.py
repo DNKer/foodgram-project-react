@@ -9,13 +9,12 @@ from recipes.models import Ingredient
 FILE: str = 'data/ingredients.json'
 
 
-def import_csv_data() -> None:
+def import_json_data() -> None:
     """ Обработка файла csv. """
     with open(FILE, 'r') as file:
         data = json.load(file)
         for note in data:
             Ingredient.objects.get_or_create(**note)
-    return None
 
 
 class Command(BaseCommand):
@@ -26,7 +25,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options) -> None:
         start_time = datetime.datetime.now()
         try:
-            import_csv_data()
+            import_json_data()
         except Exception as error:
             self.stdout.write(
                 self.style.WARNING(f'Сбой в работе импорта: {error}.')
