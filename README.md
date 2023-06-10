@@ -110,5 +110,5 @@ python manage.py load_tags
 
 - Запуск сервера
 ```bash
-python manage.py runserver 
+python manage.py runserver
 ```
