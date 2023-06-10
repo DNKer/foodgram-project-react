@@ -135,5 +135,6 @@ dmypy.json
 media/
 static/
 .vscode/
+frontend/
 
 

@@ -1,6 +1,6 @@
 import cn from 'classnames'
 import styles from './styles.module.css'
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { Icons } from '../index'
 import { hexToRgba } from '../../utils'
 

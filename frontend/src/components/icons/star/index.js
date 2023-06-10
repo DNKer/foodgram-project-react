@@ -1,3 +1,4 @@
+import React from 'react'
 const StarIcon = (props) => {
   return (
     <svg width={22} height={21} fill="none" {...props}>

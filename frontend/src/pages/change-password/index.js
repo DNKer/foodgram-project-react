@@ -3,7 +3,7 @@ import styles from './styles.module.css'
 import { useFormWithValidation } from '../../utils'
 import { AuthContext } from '../../contexts'
 import { Redirect } from 'react-router-dom'
-import { useContext } from 'react'
+import React, { useContext } from 'react'
 import MetaTags from 'react-meta-tags'
 
 const ChangePassword = ({ onPasswordChange }) => {
