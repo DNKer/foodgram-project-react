@@ -6,11 +6,11 @@ from django.core.management import BaseCommand
 from recipes.models import Ingredient
 
 
-FILE: str = 'data/ingredients.json'
+FILE: str = '../../data/ingredients.json'
 
 
 def import_json_data() -> None:
-    """ Обработка файла csv. """
+    """ Обработка файла json. """
     with open(FILE, 'r', encoding='utf-8') as file:
         data = json.load(file)
         for note in data:
@@ -18,7 +18,7 @@ def import_json_data() -> None:
 
 
 class Command(BaseCommand):
-    """ Загрузка данных из csv файла. """
+    """ Загрузка данных из json файла. """
     help = ('Загрузка данных из /data/ingredients.json.'
             'Запуск: python manage.py load_data.')
 
