@@ -2,7 +2,7 @@ import { Container, Input, Title, Main, Form, Button } from '../../components'
 import styles from './styles.module.css'
 import { useFormWithValidation } from '../../utils'
 import { Redirect } from 'react-router-dom'
-import { useContext } from 'react'
+import React, { useContext } from 'react'
 import { AuthContext } from '../../contexts'
 import MetaTags from 'react-meta-tags'
 

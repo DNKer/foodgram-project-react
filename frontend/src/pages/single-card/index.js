@@ -1,6 +1,6 @@
 import { Container, Main, Button, TagsContainer, Icons, LinkComponent } from '../../components'
 import { UserContext, AuthContext } from '../../contexts'
-import { useContext, useState, useEffect } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import styles from './styles.module.css'
 import Ingredients from './ingredients'
 import Description from './description'

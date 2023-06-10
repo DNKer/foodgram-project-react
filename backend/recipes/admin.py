@@ -2,6 +2,7 @@ from django.contrib import admin
 
 from .models import (
     Ingredient,
+    IngredientInRecipe,
     FavoriteRecipe,
     RecipeList,
     ShoppingCart,
@@ -9,21 +10,20 @@ from .models import (
 )
 
 EMPTY_STRING: str = '-пусто-'
-QUANTITY: int = 6
 
 
-class RecipeIngredientInline(admin.TabularInline):
-    model = RecipeList.ingredients.through
-    extra = 1
+class RecipeIngredientsAdmin(admin.StackedInline):
+    model = IngredientInRecipe
+    autocomplete_fields = ('ingredient',)
 
 
 @admin.register(RecipeList)
 class RecipeListAdmin(admin.ModelAdmin):
-    inlines = (RecipeIngredientInline,)
+    inlines = (RecipeIngredientsAdmin,)
     list_display = ('author', 'name', 'text', 'get_favorite_count')
     search_fields = (
         'name', 'cooking_time',
-        'author__email', 'ingredients__name'
+        'author__username', 'ingredients__name'
     )
     list_filter = (
         'pub_date', 'tags',
@@ -45,13 +45,13 @@ class RecipeListAdmin(admin.ModelAdmin):
         return '\n '.join([
             f'{item["ingredient__name"]} - {item["amount"]}'
             f' {item["ingredient__measurement_unit"]}.'
-            for item in obj.recipe.values(
+            for item in obj.recipes.values(
                 'ingredient__name',
                 'amount', 'ingredient__measurement_unit')])
 
     @admin.display(description='В избранном')
     def get_favorite_count(self, obj):
-        return obj.favorite_recipe.count()
+        return obj.favorites.count()
 
 
 @admin.register(Tag)

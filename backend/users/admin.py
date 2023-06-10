@@ -1,12 +1,9 @@
 from django.contrib import admin
-from django.contrib.auth import get_user_model
 
-from .models import Subscribe
+from .models import Subscribe, User
 
 
 EMPTY_STRING: str = '-пусто-'
-
-User = get_user_model()
 
 
 @admin.register(User)
@@ -16,7 +13,7 @@ class UserAdmin(admin.ModelAdmin):
         'first_name', 'last_name',)
     search_fields = ('email', 'username', 'first_name', 'last_name')
     list_filter = ('email', 'first_name')
-    empty_value_display = '-пусто-'
+    empty_value_display = EMPTY_STRING
 
 
 @admin.register(Subscribe)

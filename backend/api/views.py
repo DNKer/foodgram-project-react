@@ -1,15 +1,14 @@
 from django.contrib.auth import get_user_model
 from django_filters.rest_framework import DjangoFilterBackend
-from django.http import HttpResponse
 from djoser.views import UserViewSet as DjoserUserViewSet
-from rest_framework import status, viewsets
+from rest_framework import filters, status, viewsets
 from rest_framework.decorators import action, api_view
 from rest_framework.generics import get_object_or_404
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
-from .filters import IngredientFilter, TagsFilter, RecipeFilter
+from .filters import IngredientFilter, RecipeFilter
 from .pagination import LimitPageNumberPagination
 from .permissions import IsAdminOrReadOnly, IsOwnerOrReadOnly
 from recipes.models import (
@@ -25,6 +24,7 @@ from .serializers import (
     RecipeSerializer,
     SubscribeSerializer,
     TagSerializer,
+    UserSerializer,
     UserPasswordSerializer
 )
 from .services import collect_shopping_cart
@@ -54,29 +54,45 @@ class UserViewSet(DjoserUserViewSet):
     """
     Пользователи и подписки.
     """
-    lookup_url_kwarg = 'author_id'
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    filter_backends = (DjangoFilterBackend, filters.SearchFilter,)
+    search_fields = ('username', 'email')
+    permission_classes = (AllowAny,)
 
     @action(methods=['POST', 'DELETE'], detail=True,)
-    def subscribe(self, request, author_id):
-        author = get_object_or_404(User, id=author_id)
+    def subscribe(self, request, id):
+        """
+        Подписаться отписаться.
+        """
+        author = get_object_or_404(User, id=id)
         if request.method == 'POST':
             if request.user.id == author.id:
                 raise ValueError('Нельзя подписаться на себя самого')
             serializer = SubscribeSerializer(
-                Subscribe.objects.create(user=request.user, author=author),
+                Subscribe.objects.create(user=request.user,
+                                         author=author),
                 context={'request': request})
             return Response(serializer.data,
                             status=status.HTTP_201_CREATED)
-        if request.method == 'DELETE':
+        elif request.method == 'DELETE':
             if Subscribe.objects.filter(user=request.user,
                                         author=author
                                         ).exists():
                 Subscribe.objects.filter(user=request.user,
                                          author=author
                                          ).delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+                return Response(status=status.HTTP_204_NO_CONTENT)
+            return Response(
+                {'errors': 'Нельзя отписаться от автора, '
+                 'на которго вы не подписаны!'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
-    @action(detail=False, permission_classes=(IsAuthenticated,))
+    @action(methods=['GET'],
+            detail=False,
+            permission_classes=(IsAuthenticated, )
+            )
     def subscriptions(self, request):
         """ Получить на кого пользователь подписан. """
         serializer = SubscribeSerializer(
@@ -90,10 +106,9 @@ class TagsViewSet(ReadOnlyModelViewSet):
     """
     Список тэгов.
     """
-    permission_classes = (IsAdminOrReadOnly,)
     queryset = Tag.objects.all()
+    permission_classes = (IsAdminOrReadOnly,)
     serializer_class = TagSerializer
-    filter_backends = (TagsFilter,)
     pagination_class = None
 
 
@@ -101,8 +116,8 @@ class IngredientsViewSet(ReadOnlyModelViewSet):
     """
     Список ингридиентов.
     """
-    permission_classes = (IsAdminOrReadOnly,)
     queryset = Ingredient.objects.all()
+    permission_classes = (IsAdminOrReadOnly,)
     serializer_class = IngredientSerializer
     filter_backends = (IngredientFilter,)
     search_fields = ('^name',)
@@ -113,11 +128,12 @@ class RecipesViewSet(viewsets.ModelViewSet):
     """
     Список рецептов.
     """
+    queryset = RecipeList.objects.all()
     serializer_class = RecipeSerializer
     pagination_class = LimitPageNumberPagination
     filter_backends = (DjangoFilterBackend,)
-    filter_class = RecipeFilter
-    permission_classes = (IsOwnerOrReadOnly)
+    filterset_class = RecipeFilter
+    permission_classes = (IsOwnerOrReadOnly, )
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user,)
@@ -164,8 +180,7 @@ class RecipesViewSet(viewsets.ModelViewSet):
         """
         Скачать корзину (список) покупок.
         """
-        response = HttpResponse(collect_shopping_cart(request.user),
-                                content_type='text/plain')
-        response['Content-Disposition'] = (
-            'attachment; filename="shopping_cart.txt"')
-        return response
+        user = request.user
+        if not user.shopping_cart.exists():
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        return collect_shopping_cart(user)

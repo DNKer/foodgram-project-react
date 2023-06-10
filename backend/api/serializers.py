@@ -8,7 +8,9 @@ from .services import Base64ImageField
 from recipes.models import (
     Ingredient,
     IngredientInRecipe,
+    FavoriteRecipe,
     RecipeList,
+    ShoppingCart,
     Tag,
 )
 from users.models import Subscribe
@@ -77,7 +79,7 @@ class TagSerializer(serializers.ModelSerializer):
     """
     class Meta:
         model = Tag
-        fields = ('name', 'color', 'slug')
+        fields = '__all__'
 
 
 class IngredientSerializer(serializers.ModelSerializer):
@@ -86,7 +88,7 @@ class IngredientSerializer(serializers.ModelSerializer):
     """
     class Meta:
         model = Ingredient
-        fields = ('name', 'measurement_unit')
+        fields = '__all__'
 
 
 class IngredientInRecipeSerializer(serializers.ModelSerializer):
@@ -130,9 +132,9 @@ class SubscribeSerializer(serializers.ModelSerializer):
     username = serializers.CharField(source='author.username')
     first_name = serializers.CharField(source='author.first_name')
     last_name = serializers.CharField(source='author.last_name')
-    is_subscribed = serializers.BooleanField()
+    is_subscribed = serializers.SerializerMethodField()
     recipes = serializers.SerializerMethodField()
-    recipes_count = serializers.IntegerField()
+    recipes_count = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Subscribe
@@ -164,13 +166,13 @@ class SubscribeSerializer(serializers.ModelSerializer):
 
     def get_recipes(self, obj):
         """ Получение рецептов автора. """
-        recipes_items = RecipeList.objects.filter(
-            author=obj.author
-        )
-        limit = self.context.get('request').GET.get('recipes_limit')
-        if limit:
-            recipes_items = recipes_items[:int(limit)]
-        return FavoriteOrSubscribeSerializer(recipes_items, many=True).data
+        request = self.context.get('request')
+        recipes_limit = request.GET.get('recipes_limit')
+        recipes = RecipeList.objects.filter(author=obj.author)
+        if recipes_limit:
+            recipes = recipes[:int(recipes_limit)]
+        serializer = FavoriteOrSubscribeSerializer(recipes, many=True)
+        return serializer.data
 
     def get_recipes_count(self, obj):
         """ Подсчет рецептов автора. """
@@ -247,18 +249,16 @@ class RecipeSerializer(serializers.ModelSerializer):
         user = self.context.get('request').user
         if user.is_anonymous:
             return False
-        return RecipeList.objects.filter(favorite_recipe__user=user,
-                                         id=obj.id
-                                         ).exists()
+        return FavoriteRecipe.objects.filter(recipe=obj,
+                                             user=user).exists()
 
     def get_is_in_shopping_cart(self, obj):
         """ Проверка рецепта в корзине покупок. """
         user = self.context.get('request').user
         if not user or user.is_anonymous:
             return False
-        return RecipeList.objects.filter(shopping_cart__user=user,
-                                         id=obj.id
-                                         ).exists()
+        return ShoppingCart.objects.filter(recipe=obj,
+                                           user=user).exists()
 
     def validate(self, data):
         """ Валидация различных данных на уровне сериализатора. """
@@ -275,7 +275,7 @@ class RecipeSerializer(serializers.ModelSerializer):
                 )
             if ingredient['id'] in added_ingredients:
                 errors.append(
-                    'Дважды один тот же ингредиент в рецепт положить нельзя.'
+                    'Дважды один тот же ингредиент в рецепт поместить нельзя.'
                 )
             added_ingredients.append(ingredient['id'])
         tags = data.get('tags')

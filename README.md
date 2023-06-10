@@ -52,9 +52,9 @@
 
 Все эти функции реализованы в стандартной админ-панели Django.
 
-IP: 146.185.209.153 или foodgrams.ddns.net
-логин: dnk@ya.ru
-пароль: 87054Kc
+**IP: 146.185.209.153 или foodgrams.ddns.net**
+**логин: dnk@ya.ru**
+**пароль: 87054Kc**
 
 #### Запуск проекта в контейнерах
 
@@ -99,7 +99,6 @@ pip install -r -requirements.txt
 ```
 - Примените миграции и соберите статику
 ```bash
-python manage.py makemigrations
 python manage.py migrate
 python manage.py collectstatic --noinput
 ```

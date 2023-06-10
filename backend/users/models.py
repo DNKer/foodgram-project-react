@@ -1,4 +1,5 @@
 from django.contrib.auth.models import AbstractUser
+from django.core.validators import RegexValidator
 from django.db import models
 
 USER = 'user'
@@ -9,24 +10,29 @@ class User(AbstractUser):
     ROLES = ((USER, USER), (ADMIN, ADMIN))
 
     username = models.CharField(
-        verbose_name='Имя пользователя',
+        verbose_name='Ник пользователя',
         max_length=150,
-        unique=True,)
-
+        unique=True,
+        validators=(RegexValidator(
+            regex=r'^[\w.@+-]+\Z', message=(
+                'Введено некорректное значение '
+                'поля "username"')
+        ),)
+    )
     email = models.EmailField(
-        'Электронная почта',
+        verbose_name='Электронная почта',
         max_length=254,
         db_index=True,
         unique=True,
         help_text='Введите адрес электронной почты'
     )
     first_name = models.CharField(
-        'Имя',
+        verbose_name='Имя',
         max_length=150,
         help_text='Введите имя'
     )
     last_name = models.CharField(
-        'Фамилия',
+        verbose_name='Фамилия',
         max_length=150,
         help_text='Введите фамилию'
     )
@@ -72,8 +78,8 @@ class Subscribe(models.Model):
         auto_now_add=True)
 
     class Meta:
-        verbose_name = 'Подписка'
-        verbose_name_plural = 'Подписки'
+        verbose_name = 'Подписчик'
+        verbose_name_plural = 'Подписчики'
         ordering = ['-id']
         constraints = [
             models.UniqueConstraint(
@@ -83,7 +89,4 @@ class Subscribe(models.Model):
 
     def __str__(self):
         return (f'Пользователь {self.user} '
-                f'подписан на автора {self.author}')
-
-    def get_email_field_name(self):
-        return self.author.email
+                f'подписан на {self.author}')

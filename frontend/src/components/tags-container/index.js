@@ -1,4 +1,5 @@
 import styles from './styles.module.css'
+import React from 'react'
 import cn from 'classnames'
 import { Tag } from '../index'
 

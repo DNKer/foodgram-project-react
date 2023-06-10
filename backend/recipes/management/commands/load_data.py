@@ -11,7 +11,7 @@ FILE: str = 'data/ingredients.json'
 
 def import_json_data() -> None:
     """ Обработка файла csv. """
-    with open(FILE, 'r') as file:
+    with open(FILE, 'r', encoding='utf-8') as file:
         data = json.load(file)
         for note in data:
             Ingredient.objects.get_or_create(**note)

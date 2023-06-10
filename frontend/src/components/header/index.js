@@ -1,3 +1,4 @@
+import React from 'react'
 import styles from './style.module.css'
 import { Nav, AccountMenu } from '../index.js'
 import Container from '../container'

@@ -1,6 +1,6 @@
 import styles from './style.module.css'
 import { LinkComponent, Icons, Button, TagsContainer } from '../index'
-import { useState, useContext } from 'react'
+import React, { useState, useContext } from 'react'
 import { AuthContext } from '../../contexts'
 
 const Card = ({

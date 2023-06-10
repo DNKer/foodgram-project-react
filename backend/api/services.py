@@ -1,7 +1,8 @@
 import base64
 
 from django.core.files.base import ContentFile
-from django.db.models import F, Sum
+from django.db.models import Sum
+from django.http import HttpResponse
 from rest_framework import serializers
 
 from recipes.models import IngredientInRecipe
@@ -25,11 +26,19 @@ def collect_shopping_cart(user):
     """
     shopping_list = IngredientInRecipe.objects.filter(
         recipe__shopping_cart__user=user).values(
-        name=F('ingredient__name'),
-        measurement_unit=F('ingredient__measurement_unit')).annotate(
-        total_amount=Sum('amount'))
-    for item in shopping_list:
-        text = '\n'.join(f'{0} ({1}) \u2014 {2}'.format(
-            item['name'], item['measurement_unit'],
-            item['total_amount']))
-    return text
+            'ingredient__name',
+            'ingredient__measurement_unit',).annotate(
+            value=Sum('amount')).order_by('ingredient__name')
+    response = HttpResponse(
+        content_type='text/plain',
+        charset='utf-8',)
+    response['Content-Disposition'] = (
+        'attachment; filename=shopping_cart.txt')
+    response.write('Список продуктов к покупке:\n')
+    for ingredient in shopping_list:
+        response.write(
+            f'- {ingredient["ingredient__name"]} '
+            f'- {ingredient["value"]} '
+            f'{ingredient["ingredient__measurement_unit"]}\n'
+        )
+    return response
