@@ -2,7 +2,6 @@ import styles from './style.module.css'
 import cn from 'classnames'
 import { LinkComponent } from '../index'
 import navigation from '../../configs/navigation'
-import React from 'react'
 
 const Nav = ({ loggedIn, orders }) => {
   return <nav className={styles.nav}>

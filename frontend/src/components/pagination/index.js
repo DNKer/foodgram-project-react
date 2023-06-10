@@ -3,7 +3,7 @@ import cn from 'classnames'
 import { LinkComponent, Icons } from '../index'
 import arrowLeft from './arrow-left.png'
 import arrowRight from './arrow-right.png'
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 
 const Pagination = ({ count = 0, limit = 6, initialActive = 1, onPageChange, page }) => {
   const [ active, setActive ] = useState(initialActive)

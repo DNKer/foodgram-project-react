@@ -1,4 +1,3 @@
-import React from 'react'
 const StarActiveIcon = (props) => {
   return (
     <svg width={22} height={21} fill="none" {...props}>

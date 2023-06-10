@@ -1,6 +1,5 @@
 import cn from 'classnames'
 import styles from './style.module.css'
-import React from 'react'
 
 const Button = ({
   children,
