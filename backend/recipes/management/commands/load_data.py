@@ -6,7 +6,7 @@ from django.core.management import BaseCommand
 from recipes.models import Ingredient
 
 
-FILE: str = '../../data/ingredients.json'
+FILE: str = '../data/ingredients.json'
 
 
 def import_json_data() -> None:
