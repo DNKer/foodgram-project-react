@@ -1,6 +1,5 @@
 import styles from './styles.module.css'
 import cn from 'classnames'
-import React from 'react'
 import { Purchase } from '../index'
 
 const PurchaseList = ({ orders = [], updateOrders, handleRemoveFromCart }) => {

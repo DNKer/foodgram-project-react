@@ -1,6 +1,6 @@
 import cn from 'classnames'
 import styles from './styles.module.css'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Checkbox } from '../index'
 
 const CheckboxGroup = ({

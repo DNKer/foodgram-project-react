@@ -1,7 +1,7 @@
 import { Container, IngredientsSearch, FileInput, Input, Title, CheckboxGroup, Main, Form, Button, Checkbox, Textarea } from '../../components'
 import styles from './styles.module.css'
 import api from '../../api'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useTags } from '../../utils'
 import { useParams, useHistory } from 'react-router-dom'
 import MetaTags from 'react-meta-tags'

@@ -1,5 +1,4 @@
 import styles from './styles.module.css'
-import React from 'react'
 import cn from 'classnames'
 import { hexToRgba } from '../../utils'
 

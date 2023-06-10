@@ -11,7 +11,7 @@ import {
 import cn from 'classnames'
 import styles from './styles.module.css'
 import { useRecipes } from '../../utils/index.js'
-import React, { useEffect, useState, useContext } from 'react'
+import { useEffect, useState, useContext } from 'react'
 import api from '../../api'
 import { useParams, useHistory } from 'react-router-dom'
 import { UserContext } from '../../contexts'

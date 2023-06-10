@@ -75,7 +75,7 @@ class UserViewSet(DjoserUserViewSet):
                 context={'request': request})
             return Response(serializer.data,
                             status=status.HTTP_201_CREATED)
-        if request.method == 'DELETE':
+        elif request.method == 'DELETE':
             if Subscribe.objects.filter(user=request.user,
                                         author=author
                                         ).exists():

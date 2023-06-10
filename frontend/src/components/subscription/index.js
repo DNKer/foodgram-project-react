@@ -1,6 +1,5 @@
 import styles from './styles.module.css'
 import cn from 'classnames'
-import React from 'react'
 import { Icons, Button, LinkComponent } from '../index'
 const countForm = (number, titles) => {
   number = Math.abs(number);

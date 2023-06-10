@@ -1,7 +1,7 @@
 import { PurchaseList, Title, Container, Main, Button } from '../../components'
 import styles from './styles.module.css'
 import { useRecipes } from '../../utils/index.js'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import api from '../../api'
 import MetaTags from 'react-meta-tags'
 
