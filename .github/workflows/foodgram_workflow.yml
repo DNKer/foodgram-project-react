@@ -42,13 +42,13 @@ jobs:
         with:
             context: ./backend/
             push: true
-            tags: ${{ secrets.DOCKER_USERNAME }}/foodgram_backend:test
+            tags: ${{ secrets.DOCKER_USERNAME }}/foodgram_backend:latest
       - name: Push frontend to Docker Hub
         uses: docker/build-push-action@v2 
         with:
           context: ./frontend/
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/foodgram_frontend:test
+          tags: ${{ secrets.DOCKER_USERNAME }}/foodgram_frontend:latest
   deploy:
     runs-on: ubuntu-latest
     needs: build_and_push_to_docker_hub
@@ -64,8 +64,8 @@ jobs:
           docker logout   
           docker rm -v -f $(docker ps -qa)
           sudo systemctl stop nginx
-          sudo docker pull ${{ secrets.DOCKER_USERNAME }}/foodgram_backend:test
-          sudo docker pull ${{ secrets.DOCKER_USERNAME }}/foodgram_frontend:test
+          sudo docker pull ${{ secrets.DOCKER_USERNAME }}/foodgram_backend:latest
+          sudo docker pull ${{ secrets.DOCKER_USERNAME }}/foodgram_frontend:latest
           sudo docker-compose stop
           sudo docker-compose rm backend
     - name: docker-compose up
@@ -88,6 +88,7 @@ jobs:
           echo SECRET_KEY="${{ secrets.SECRET_KEY }}" >> .env
           echo ALLOWED_HOSTS=${{ secrets.ALLOWED_HOSTS }} >> .env
           echo DEBUG=${{ secrets.DEBUG }} >> .env
+          sudo systemctl start nginx
           sudo docker-compose up -d --build
           sudo docker-compose exec -T backend python manage.py collectstatic --no-input
           sudo docker-compose exec -T backend python manage.py makemigrations
