@@ -15,6 +15,7 @@ services:
     image: dnker/foodgram_backend:latest
     restart: always
     volumes:
+      - data_value:/code/data/
       - static_value:/code/static/
       - media_value:/code/media/
       - redoc:/code/api/docs/
@@ -30,8 +31,6 @@ services:
       - ../frontend/:/app/result_build/
     depends_on:
       - backend
-    stdin_open: true
-    tty: true
 
   nginx:
     container_name: foodgram_nginx
@@ -46,9 +45,11 @@ services:
       - static_value:/var/html/static/
       - media_value:/var/html/media/
     depends_on:
-      - backend
+      - frontend
 
 volumes:
   db_value:
+  data_value:
   static_value:
   media_value:
+  redoc:
