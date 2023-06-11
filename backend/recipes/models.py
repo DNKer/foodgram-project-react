@@ -72,7 +72,7 @@ class RecipeList(models.Model):
     )
     image = models.ImageField(
         'Ссылка на картинку на сайте',
-        upload_to='static/recipe/',
+        upload_to='images/',
         blank=True,
         null=True
     )
