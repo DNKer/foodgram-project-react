@@ -30,6 +30,8 @@ services:
       - ../frontend/:/app/result_build/
     depends_on:
       - backend
+    stdin_open: true
+    tty: true
 
   nginx:
     container_name: foodgram_nginx
@@ -44,10 +46,9 @@ services:
       - static_value:/var/html/static/
       - media_value:/var/html/media/
     depends_on:
-      - frontend
+      - backend
 
 volumes:
   db_value:
   static_value:
   media_value:
-  redoc:
