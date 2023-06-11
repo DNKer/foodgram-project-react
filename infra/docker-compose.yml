@@ -49,7 +49,7 @@ services:
 
 volumes:
   db_value:
+  data_value:
   static_value:
   media_value:
-  data_value:
   redoc:
