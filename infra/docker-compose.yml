@@ -15,9 +15,9 @@ services:
     image: dnker/foodgram_backend:latest
     restart: always
     volumes:
-      - data_value:/code/data/
       - static_value:/code/static/
       - media_value:/code/media/
+      - redoc:/code/api/docs/
     depends_on:
       - db
     env_file:
@@ -50,4 +50,4 @@ volumes:
   db_value:
   static_value:
   media_value:
-  data_value:
+  redoc:
