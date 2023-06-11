@@ -1,12 +1,13 @@
 import datetime
 import json
 
+from django.conf import settings
 from django.core.management import BaseCommand
 
 from recipes.models import Ingredient
 
 
-FILE: str = 'data/ingredients.json'
+FILE: str = f'{settings.BASE_DIR}/data/ingredients.json'
 
 
 def import_json_data() -> None:

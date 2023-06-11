@@ -94,7 +94,7 @@ jobs:
           sudo docker-compose exec -T backend python manage.py makemigrations
           sudo docker-compose exec -T backend python manage.py migrate --no-input
           sudo docker-compose exec -T backend python manage.py migrate --run-syncdb
-          echo "from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.create_superuser('Dmitry', 'dnk@ya.ru', '87054Kc')" | python manage.py shell
+          echo "from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.create_superuser(${{ secrets.DJANGO_ADM_NAME }}, ${{ secrets.DJANGO_ADM_EMAIL }}, ${{ secrets.DJANGO_ADM_PASSWORD }})" | python manage.py shell
           sudo docker-compose exec -T backend python manage.py load_tags
           sudo docker-compose exec -T backend python manage.py load_data
   send_message:
