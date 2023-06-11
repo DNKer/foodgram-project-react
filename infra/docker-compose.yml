@@ -51,4 +51,5 @@ volumes:
   db_value:
   static_value:
   media_value:
+  redoc:
   data_value:
