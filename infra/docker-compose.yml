@@ -18,6 +18,7 @@ services:
       - data_value:/code/data/
       - static_value:/code/static/
       - media_value:/code/media/
+      - redoc:/code/api/docs/
     depends_on:
       - db
     env_file:
@@ -51,3 +52,4 @@ volumes:
   static_value:
   media_value:
   data_value:
+  redoc:
