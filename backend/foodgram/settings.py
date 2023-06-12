@@ -4,12 +4,13 @@ License Free
 Version: 1.0.1. 2023"""
 
 import os
+import environ
 
-from decouple import config
 from dotenv import load_dotenv
 
 
 load_dotenv()
+env = environ.Env()
 
 DEFAULT_PAGE_SIZE: int = 6
 
@@ -21,7 +22,7 @@ SECRET_KEY = os.getenv(
     default='secret_code_must_be_here'
 )
 
-DEBUG = config((os.environ['DEBUG']), default=False, cast=bool)
+DEBUG = env.bool('DEBUG', default=False)
 
 ALLOWED_HOSTS = os.environ.get(
     'ALLOWED_HOSTS', default='127.0.0.1').split()
