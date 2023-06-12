@@ -5,6 +5,7 @@ Version: 1.0.1. 2023"""
 
 import os
 
+from decouple import config
 from dotenv import load_dotenv
 
 
@@ -20,7 +21,7 @@ SECRET_KEY = os.getenv(
     default='secret_code_must_be_here'
 )
 
-DEBUG = os.getenv('DEBUG', False)
+DEBUG = config('DEBUG', default=False, cast=bool)
 
 ALLOWED_HOSTS = os.environ.get(
     'ALLOWED_HOSTS', default='127.0.0.1').split()
