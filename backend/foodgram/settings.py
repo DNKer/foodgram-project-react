@@ -20,8 +20,7 @@ SECRET_KEY = os.getenv(
     default='secret_code_must_be_here'
 )
 
-APP_DEGUB_MODE = os.getenv('DEBUG', default=False)
-DEBUG = eval(APP_DEGUB_MODE) if isinstance(APP_DEGUB_MODE, str) else APP_DEGUB_MODE
+DEBUG = os.getenv('DEBUG', False) == 'True'
 
 ALLOWED_HOSTS = os.environ.get(
     'ALLOWED_HOSTS', default='127.0.0.1').split()
