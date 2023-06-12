@@ -1,11 +1,10 @@
 import base64
 
 from django.core.files.base import ContentFile
-from django.db.models import Sum
 from django.http import HttpResponse
 from rest_framework import serializers
 
-from recipes.models import IngredientInRecipe
+from recipes.models import ShoppingCart
 
 
 class Base64ImageField(serializers.ImageField):
@@ -20,25 +19,32 @@ class Base64ImageField(serializers.ImageField):
         return super().to_internal_value(data)
 
 
-def collect_shopping_cart(user):
+def collect_shopping_cart(request):
     """
     Формирование корзины (списка) покупок.
     """
-    shopping_list = IngredientInRecipe.objects.filter(
-        recipe__shopping_cart__user=user).values(
-            'ingredient__name',
-            'ingredient__measurement_unit',).annotate(
-            value=Sum('amount')).order_by('ingredient__name')
+    shopping_list = ShoppingCart.objects.filter(user=request.user).all()
+    shopping_list = {}
+    for item in shopping_list:
+        for recipe_ingredient in item.recipe.recipe_ingredients.all():
+            name = recipe_ingredient.ingredient.name
+            measuring_unit = recipe_ingredient.ingredient.measurement_unit
+            amount = recipe_ingredient.amount
+            if name not in shopping_list:
+                shopping_list[name] = {
+                    'name': name,
+                    'measurement_unit': measuring_unit,
+                    'amount': amount
+                }
+            else:
+                shopping_list[name]['amount'] += amount
+    content = (
+        [f'{item["name"]} ({item["measurement_unit"]}) '
+         f'- {item["amount"]}\n'
+         for item in shopping_list.values()])
     response = HttpResponse(
-        content_type='text/plain',
+        content, content_type='text/plain',
         charset='utf-8',)
     response['Content-Disposition'] = (
-        'attachment; filename=shopping_cart.txt')
-    response.write('Список продуктов к покупке:\n')
-    for ingredient in shopping_list:
-        response.write(
-            f'- {ingredient["ingredient__name"]} '
-            f'- {ingredient["value"]} '
-            f'{ingredient["ingredient__measurement_unit"]}\n'
-        )
+        f'attachment; filename={0}'.format(filename='shopping_cart.txt'))
     return response
