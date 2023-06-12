@@ -20,7 +20,7 @@ SECRET_KEY = os.getenv(
     default='secret_code_must_be_here'
 )
 
-DEBUG = os.getenv('DEBUG', default=False) == 'False'
+DEBUG = os.getenv('DEBUG', default=False)
 
 ALLOWED_HOSTS = os.environ.get(
     'ALLOWED_HOSTS', default='127.0.0.1').split()
@@ -92,11 +92,11 @@ else:
             'ENGINE': os.getenv('DB_ENGINE',
                                 default='django.db.backends.postgresql'),
             'NAME': os.getenv('DB_NAME',
-                              default='foodgram'),
+                              default='postgres'),
             'USER': os.getenv('POSTGRES_USER',
-                              default='dnk'),
+                              default='postgres'),
             'PASSWORD': os.getenv('POSTGRES_PASSWORD',
-                                  default='87054Kc'),
+                                  default='postgres'),
             'HOST': os.getenv('DB_HOST',
                               default='db'),
             'PORT': os.getenv('DB_PORT',
