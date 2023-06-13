@@ -3,6 +3,8 @@ version: '3.8'
 services:
   db:
     container_name: foodgram_db
+    networks:
+      - djangonetwork
     image: postgres:13.0-alpine
     restart: always
     volumes:
@@ -21,6 +23,10 @@ services:
       - redoc:/code/api/docs/
     depends_on:
       - db
+    links:
+      - db:db
+    networks:
+      - djangonetwork
     env_file:
       - .env
 
@@ -46,6 +52,10 @@ services:
       - media_value:/var/html/media/
     depends_on:
       - frontend
+
+networks:
+  djangonetwork:
+    driver: bridge
 
 volumes:
   db_value:
