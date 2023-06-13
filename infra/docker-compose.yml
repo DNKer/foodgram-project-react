@@ -22,7 +22,7 @@ services:
     links:
       - db:db
     env_file:
-      - .env
+      - ./.env
 
   frontend:
     image: dnker/foodgram_frontend:latest
