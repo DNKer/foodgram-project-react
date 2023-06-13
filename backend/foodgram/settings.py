@@ -22,7 +22,7 @@ SECRET_KEY = os.getenv(
     default='secret_code_must_be_here'
 )
 
-DEBUG = env.bool('DEBUG', default=False)
+DEBUG = env.bool('DEBUG', default=True)
 
 ALLOWED_HOSTS = os.environ.get(
     'ALLOWED_HOSTS', default='127.0.0.1').split()
@@ -100,7 +100,7 @@ else:
             'PASSWORD': os.getenv('POSTGRES_PASSWORD',
                                   default='postgres'),
             'HOST': os.getenv('DB_HOST',
-                              default='foodgram_db'),
+                              default='localhost'),
             'PORT': os.getenv('DB_PORT',
                               default='5432')
         }
