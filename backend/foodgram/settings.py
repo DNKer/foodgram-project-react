@@ -1,7 +1,7 @@
 """ FoodGram Community
 Copyright (C) 2023 Authors: Dmitry Korepanov, Yandex practikum
 License Free
-Version: 1.0.1. 2023"""
+Version: 1.1.0. 2023"""
 
 import os
 import environ
