@@ -10,7 +10,7 @@ from dotenv import load_dotenv
 
 
 load_dotenv()
-env = environ.Env()
+# env = environ.Env()
 
 DEFAULT_PAGE_SIZE: int = 6
 
@@ -22,7 +22,8 @@ SECRET_KEY = os.getenv(
     default='secret_code_must_be_here'
 )
 
-DEBUG = env.bool('DEBUG', default=False)
+# DEBUG = env.bool('DEBUG', default=False)
+DEBUG = os.getenv('DEBUG', default='True') == 'True'
 
 ALLOWED_HOSTS = os.environ.get(
     'ALLOWED_HOSTS', default='127.0.0.1').split()
