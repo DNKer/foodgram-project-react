@@ -4,13 +4,13 @@ License Free
 Version: 1.1.0. 2023"""
 
 import os
-# import environ
+import environ
 
 from dotenv import load_dotenv
 
 
 load_dotenv()
-# env = environ.Env()
+env = environ.Env()
 
 DEFAULT_PAGE_SIZE: int = 6
 
@@ -22,8 +22,8 @@ SECRET_KEY = os.getenv(
     default='secret_code_must_be_here'
 )
 
-# DEBUG = env.bool('DEBUG', default=False)
-DEBUG = os.getenv('DEBUG', default='True') == 'True'
+DEBUG = env.bool('DEBUG', default=False)
+
 
 ALLOWED_HOSTS = os.environ.get(
     'ALLOWED_HOSTS', default='127.0.0.1').split()
