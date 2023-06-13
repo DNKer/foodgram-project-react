@@ -4,7 +4,7 @@ License Free
 Version: 1.1.0. 2023"""
 
 import os
-import environ
+# import environ
 
 from dotenv import load_dotenv
 
