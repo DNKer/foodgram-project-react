@@ -24,7 +24,6 @@ SECRET_KEY = os.getenv(
 
 DEBUG = env.bool('DEBUG', default=False)
 
-
 ALLOWED_HOSTS = os.environ.get(
     'ALLOWED_HOSTS', default='127.0.0.1').split()
 
