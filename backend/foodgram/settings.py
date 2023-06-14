@@ -81,7 +81,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'foodgram.wsgi.application'
 
 
-if not DEBUG:
+if DEBUG:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -93,7 +93,7 @@ else:
         'default': {
             'ENGINE': os.getenv('DB_ENGINE',
                                 default='django.db.backends.postgresql'),
-            'NAME': os.getenv('DB_NAME',
+            'NAME': os.getenv('POSTGRES_DB',
                               default='postgres'),
             'USER': os.getenv('POSTGRES_USER',
                               default='postgres'),
